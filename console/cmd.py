@@ -15,7 +15,7 @@ class DatabaseConsole:
             password=password,
             database=database
         )
-        self.select = database
+        self.selected = database
         self.cursor = self.connection.cursor()
         
     def list(self):
@@ -28,6 +28,9 @@ class DatabaseConsole:
         # Выводим список таблиц
         for table in tables:
             print(table[0])
+            
+    def select(self, table_name):
+        self.selected = table_name
 
     def execute_query(self, query, values=None):
         if values:
@@ -56,16 +59,19 @@ class DatabaseConsole:
         for row in rows:
             print(row)
 
-    def exit(self):
-        print("exit..")
-        self.connection.close()
-        exit(0)
+    def quit(self):
+        if self.selected == DATABASE:
+            print("exit..")
+            self.connection.close()
+            exit(0)
+        else:
+            self.selected = DATABASE
         
     def start(self):
         
         while True:
             try:
-                user_input = input(f"{self.select}: ")
+                user_input = input(f"{self.selected}: ")
             except KeyboardInterrupt:
                 self.connection.close()
                 exit()
@@ -87,4 +93,4 @@ class DatabaseConsole:
                     print("Неверная команда.")
             except Exception as e:
                 print(f"exit with error: {e}")
-                self.close_connection()
+                self.connection.close()
