@@ -15,6 +15,7 @@ class DatabaseConsole:
             password=password,
             database=database
         )
+        
         self.selected = database
         self.cursor = self.connection.cursor()
         
@@ -59,7 +60,7 @@ class DatabaseConsole:
         for row in rows:
             print(row)
 
-    def quit(self):
+    def exit(self):
         if self.selected == DATABASE:
             print("exit..")
             self.connection.close()
