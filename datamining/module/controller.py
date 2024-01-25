@@ -15,7 +15,7 @@ class EventParser:
 
 class Controller(Bot):
     def __init__(self, log_file_path, logger_name, scripts_folder, config_filename="config.json"):
-        super().__init__(self, log_file_path=log_file_path, logger_name=logger_name)
+        super().__init__(log_file_path=log_file_path, logger_name=logger_name)
         self.scripts_folder = scripts_folder
         self.root_directory = os.path.abspath(os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'), '..'))
         self.config_filename = config_filename

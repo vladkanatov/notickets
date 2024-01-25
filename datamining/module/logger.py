@@ -1,50 +1,38 @@
-import os
-import logging
-from colorama import init, Fore
-
-class ColoredFormatter(logging.Formatter):
-    COLORS = {
-        'DEBUG': Fore.CYAN,
-        'INFO': Fore.GREEN,
-        'WARNING': Fore.YELLOW,
-        'ERROR': Fore.RED,
-        'CRITICAL': Fore.MAGENTA,
-    }
-
-    def format(self, record):
-        log_message = super().format(record)
-        return f"{self.COLORS.get(record.levelname, '')}{log_message}{Fore.RESET}"
-
-class FileHandler(logging.FileHandler):
-    def __init__(self, filename, mode='a', encoding=None, delay=0):
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
-        super().__init__(filename, mode, encoding, delay)
+from loguru import logger
+import sys
 
 class Logger:
-    def __init__(self, log_file_path, logger_name):
-        init(autoreset=True)
-        self.logger = logging.getLogger(logger_name)
-        self.logger.setLevel(logging.DEBUG)
+    def __init__(self, class_name=None) -> None:
+        self.class_name = class_name
+        self.logger = self.setup_logger()
 
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(ColoredFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-        self.logger.addHandler(console_handler)
+    def setup_logger(self):
+        logger_instance = logger
+        if self.class_name:
+            logger_instance = logger_instance.bind(class_name=self.class_name)
+        logger_instance.add(sys.stderr, format="{time} - {extra[class_name]} - {message}")
+        return logger_instance
 
-        file_handler = FileHandler(log_file_path)
-        file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-        self.logger.addHandler(file_handler)
+    def main(self):
+        self.logger.info('good_stuff')
 
-    def info(self, message):
-        self.logger.info(message)
+class Bot(Logger):
+    def __init__(self) -> None:
+        super().__init__(class_name=__class__.__name__)
 
-    def debug(self, message):
-        self.logger.debug(message)
+    def main(self):
+        self.logger.info("Good")
 
-    def error(self, message):
-        self.logger.error(message)
+class Setup(Logger):
+    def __init__(self) -> None:
+        super().__init__(class_name=__class__.__name__)
+        
+    def main(self):
+        self.logger.error('Oshibka')
 
-    def critical(self, message):
-        self.logger.critical(message)
+# Пример использования
+x = Setup()
+x.main()
 
-    def warning(self, message):
-        self.logger.warning(message)
+bot = Bot()
+bot.main()

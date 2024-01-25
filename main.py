@@ -12,7 +12,6 @@ if __name__ == "__main__":
     controller = Controller(
                             log_file_path=log_file_path,
                             scripts_folder=scripts_folder,
-                            config_filename=config_path,
-                            logger_name=__name__
+                            config_filename=config_path
                         )
     asyncio.run(controller.run_scripts())
