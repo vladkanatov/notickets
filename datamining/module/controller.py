@@ -3,7 +3,8 @@ import importlib
 import asyncio
 import inspect
 import json
-from datamining.module.bot import Bot
+from .bot import Bot
+from .logger import Logger
 
 class EventParser:
     def __init__(self, delay=0):
@@ -13,9 +14,11 @@ class EventParser:
         # Реализация асинхронного парсинга для базового класса
         pass
 
-class Controller(Bot):
-    def __init__(self, log_file_path, logger_name, scripts_folder, config_filename="config.json"):
-        super().__init__(log_file_path=log_file_path, logger_name=logger_name)
+class Controller(Bot, Logger):
+    def __init__(self, scripts_folder, config_filename="config.json"):
+        Logger.__init__(self, class_name=__class__.__name__)
+        Bot.__init__(self)
+
         self.scripts_folder = scripts_folder
         self.root_directory = os.path.abspath(os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'), '..'))
         self.config_filename = config_filename
@@ -27,7 +30,7 @@ class Controller(Bot):
         web-ресурсов"""
     
     async def load_scripts(self):
-        self.info('Запуск загрузки скрипта')
+        self.logger.info('PRO')
         scripts = []
         with open(self.config_path, 'r') as config_file:
             config = json.load(config_file)
