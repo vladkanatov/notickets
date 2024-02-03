@@ -4,14 +4,13 @@ import importlib
 import asyncio
 import inspect
 import json
+from colorlog import ColoredFormatter
 
-class EventParser:
-    def __init__(self, delay=0):
-        self.delay = delay
+class AsyncStreamHandler(logging.Handler):
+    async def emit(self, record):
+        # Вместо использования self.handle(record), мы используем asyncio.to_thread
+        await asyncio.to_thread(super().emit, record)
 
-    async def parse(self):
-        # Реализация асинхронного парсинга для базового класса
-        pass
 
 class Bot:
     def __init__(self):
@@ -23,50 +22,34 @@ class Bot:
         
     
     def _setup_logger(self):
+        # Удаляем все существующие обработчики
+        for handler in self.logger.handlers:
+            self.logger.removeHandler(handler)
+
         # Добавляем FileHandler
-        
         log_file_path_class = os.path.join('logs', f"{self.__class__.__name__.lower()}.log")
         file_handler = logging.FileHandler(log_file_path_class, encoding="utf-8")
         file_handler.setLevel(logging.DEBUG)  # Уровень логов для файла
         file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         file_handler.setFormatter(file_formatter)
         self.logger.addHandler(file_handler)
-        
-        # Добавляем StreamHandler (консоль)
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.DEBUG)  # Уровень логов для консоли
-
-        # Форматтеры для консольных логов для разных уровней
-        info_formatter = logging.Formatter('\033[92m%(asctime)s\033[0m - \033[95m%(name)s\033[0m - \033[92mINFO\033[0m: %(message)s')
-        debug_formatter = logging.Formatter('\033[92m%(asctime)s\033[0m - \033[95m%(name)s\033[0m - \033[96mDEBUG\033[0m: %(message)s')
-        warning_formatter = logging.Formatter('\033[92m%(asctime)s\033[0m - \033[95m%(name)s\033[0m - \033[93mWARNING\033[0m: %(message)s')
-        error_formatter = logging.Formatter('\033[92m%(asctime)s\033[0m - \033[95m%(name)s\033[0m - \033[91mERROR\033[0m: %(message)s')
-        critical_formatter = logging.Formatter('\033[92m%(asctime)s\033[0m - \033[95m%(name)s\033[0m - \033[30;41mCRITICAL\033[0m: %(message)s')
-
-        # Устанавливаем соответствующие форматтеры для каждого уровня
-        console_handler.setFormatter(info_formatter)  # для info
-        self.logger.addHandler(console_handler)
 
         console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.DEBUG)  # Уровень логов для консоли
-        console_handler.setFormatter(debug_formatter)  # для debug
+        date_format = "%d-%m-%Y %H:%M:%S"
+        console_handler.setFormatter(ColoredFormatter(
+            "\033[32m%(asctime)s\033[0m - %(log_color)s%(levelname)s%(reset)s - \033[35m%(name)s\033[0m > %(message)s",
+            log_colors={
+                'DEBUG': 'cyan',
+                'INFO': 'green',
+                'WARNING': 'yellow',
+                'ERROR': 'red',
+                'CRITICAL': 'bold_red',
+            },
+            reset=True,
+            style='%',
+            datefmt=date_format
+        ))
         self.logger.addHandler(console_handler)
-
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.WARNING)  # Уровень логов для консоли
-        console_handler.setFormatter(warning_formatter)  # для warning
-        self.logger.addHandler(console_handler)
-
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.ERROR)  # Уровень логов для консоли
-        console_handler.setFormatter(error_formatter)  # для error
-        self.logger.addHandler(console_handler)
-
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.CRITICAL)  # Уровень логов для консоли
-        console_handler.setFormatter(critical_formatter)  # для critical
-        self.logger.addHandler(console_handler)
-
         
     def info(self, message: str, *args):
         self.logger.info(message, *args)
@@ -76,6 +59,7 @@ class Bot:
         
     def error(self, message: str, *args):
         self.logger.error(message, *args)
+        
     def critical(self, message: str, *args):
         self.logger.critical(message, *args)
         
@@ -84,13 +68,13 @@ class Bot:
 
 
 class Controller(Bot):
-    def __init__(self, scripts_folder, config_filename="config.json"):
+    def __init__(self, config_filename="config.json"):
         super().__init__()
 
-        self.scripts_folder = scripts_folder
+        self.scripts_folder = os.path.abspath("/home/lon8/python/projects/notickets/datamining/scripts")
         self.root_directory = os.path.abspath(os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'), '..'))
         self.config_filename = config_filename
-        self.config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), config_filename)
+        self.config_path = os.path.join(self.root_directory, config_filename)
 
     def __str__(self) -> str:
         """Этот класс используется для запуска
@@ -98,7 +82,6 @@ class Controller(Bot):
         web-ресурсов"""
     
     async def load_scripts(self):
-        self.info("Good")
         scripts = []
         with open(self.config_path, 'r') as config_file:
             config = json.load(config_file)
@@ -137,10 +120,25 @@ class Controller(Bot):
         await asyncio.sleep(script.delay)
         await script.parse()
 
+class EventParser(Controller):
+    def __init__(self, delay=0):
+        super().__init__()
+        self.delay = delay
+
+    def run(self):
+        self.info("Good")
+        self.debug("Normal")
+        self.warning("Kek")
+        self.error('Kuka')
+        self.critical('AAAA')
+        
+    
 # Пример использования
 if __name__ == "__main__":
-    scripts_folder = os.path.abspath("путь/к/папке/со/скриптами")
     config_path = os.path.abspath("config.json")
     
-    controller = Controller(scripts_folder, config_filename=config_path)
-    asyncio.run(controller.run_scripts())
+    # controller = Controller(scripts_folder, config_filename=config_path)
+    # asyncio.run(controller.run_scripts())
+
+    x = EventParser()
+    x.run()
