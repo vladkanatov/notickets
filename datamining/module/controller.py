@@ -7,9 +7,7 @@ import asyncio
 import inspect
 import json
 import re
-import shutil
 import threading
-import time
 from typing import Any
 from colorlog import ColoredFormatter
             
@@ -86,6 +84,12 @@ class Controller(Bot):
         self.root_directory = os.path.abspath(os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'), '..'))
         self.config_filename = config_filename
         self.config_path = os.path.join(self.root_directory, config_filename)
+        
+        self.log_controller = LogController(log_folder="logs")
+        asyncio.create_task(self.log_controller.schedule_compression())
+        
+        self.loop = asyncio.get_event_loop()
+        self.loop.run_until_complete(self.run_scripts())
 
     def __str__(self) -> str:
         """Этот класс используется для запуска
@@ -120,16 +124,13 @@ class Controller(Bot):
 
     async def run_scripts(self):
         scripts = await self.load_scripts()
-        tasks = []
-
-        for script in scripts:
-            tasks.append(self.run_script_with_delay(script))
+        tasks = [self.run_script_with_delay(script) for script in scripts]
 
         await asyncio.gather(*tasks)
 
     async def run_script_with_delay(self, script):
         await asyncio.sleep(script.delay)
-        await script.parse()
+        await script.kernel()
 
 class EventParser(Controller):
     def __init__(self, delay=0):
