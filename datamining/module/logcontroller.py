@@ -7,7 +7,7 @@ import threading
 from .bot import Bot
 
 log_file_path_class = os.path.join('logs', "controller.log")
-log_time_format = '%Y-%m-%d %H:%M:%S,%f'
+log_time_format = '%Y-%m-%d %H:%M:%S'
 
 class LogController(Bot):
     def __init__(self, log_folder):

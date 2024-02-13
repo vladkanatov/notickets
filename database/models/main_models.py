@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey, MetaData
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.sql import func
 
 Base = declarative_base(metadata=MetaData())
@@ -66,5 +66,8 @@ class EventSites(Base):
 
     event_id = Column(Integer, ForeignKey('all_events.id'), primary_key=True)
     site_id = Column(Integer, ForeignKey('sites.id'), primary_key=True)
+
+Session = sessionmaker(bind=engine)
+session = Session()
 
 metadata = Base.metadata.create_all(bind=engine)

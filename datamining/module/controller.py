@@ -1,11 +1,16 @@
+from datetime import datetime
 import os
 import importlib
 import asyncio
 import inspect
 import json
-from .bot import Bot
-from datamining.module.logcontroller import LogController
 
+from sqlalchemy import delete
+from .bot import Bot
+from database.models.main_models import AllEvents, session
+
+# LogContoller is coming
+# from datamining.module.logcontroller import LogController
 
 
 class Controller(Bot):
@@ -16,12 +21,6 @@ class Controller(Bot):
         self.root_directory = os.path.abspath(os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'), '..'))
         self.config_filename = config_filename
         self.config_path = os.path.join(self.root_directory, config_filename)
-        
-        self.log_controller = LogController(log_folder="logs")
-        asyncio.create_task(self.log_controller.schedule_compression())
-        
-        self.loop = asyncio.get_event_loop()
-        self.loop.run_until_complete(self.run_scripts())
 
     def __str__(self) -> str:
         """Этот класс используется для запуска
@@ -36,10 +35,10 @@ class Controller(Bot):
         for file_name in os.listdir(self.scripts_folder):
             if file_name.endswith(".py"):
                 module_name = file_name[:-3]
-                module_path = os.path.join(self.scripts_folder, file_name)
+                module_path = f'datamining.scripts.{module_name}'
 
                 try:
-                    module = importlib.import_module(module_name)
+                    module = importlib.import_module(module_path)
                     for name in dir(module):
                         obj = getattr(module, name)
                         if (
@@ -61,17 +60,42 @@ class Controller(Bot):
         await asyncio.gather(*tasks)
 
     async def run_script_with_delay(self, script):
+        await script.run()
         await asyncio.sleep(script.delay)
-        await script.kernel()
+        
 
 class Parser(Controller):
-    def __init__(self, delay=0):
-        super().__init__()
-        self.delay = delay
+    def __init__(self, config_filename="config.json"):
+        super().__init__(config_filename)
+        
+        self.delay = 3600 # Задержка по-умолчанию
+        
+    def _clear_events(self, parser):
+        delete_query = delete(AllEvents).where(getattr(AllEvents, "parser") == parser)
 
-    def run(self):
-        self.info("Good")
-        self.debug("Normal")
-        self.warning("Kek")
-        self.error('Kuka')
-        self.critical('AAAA')
+        session.execute(delete_query)
+
+        # Подтверждаем изменения
+        session.commit()
+        
+        
+    def register_event(self, event_name: str, link: str, date: datetime, venue: str = None):
+        event_name = event_name.replace('\n', ' ')
+        if venue is not None:
+            venue = venue.replace('\n', ' ')
+            
+        log_time_format = '%Y-%m-%d %H:%M:%S'
+        normal_date = datetime.strftime(date, log_time_format)
+        
+        parser = self.__class__.__module__.split('.')[-1]
+        
+        self._clear_events(parser)
+        
+        new_event = AllEvents(
+            name=event_name,
+            link=link,
+            parser=parser,
+            date=normal_date
+        )
+        session.add(new_event)
+        session.commit()

@@ -2,6 +2,7 @@ import logging
 from colorlog import ColoredFormatter
 import os
 from typing import Any
+from .manager import user_agent
 
 class Bot:
     def __init__(self):
@@ -10,7 +11,8 @@ class Bot:
         self.logger.setLevel(logging.DEBUG)
         # Конфигурируем логгер
         self._setup_logger()
-        self.schedule_compressor
+        
+        self.user_agent = user_agent.random()
     
     def _setup_logger(self):
         # Удаляем все существующие обработчики
