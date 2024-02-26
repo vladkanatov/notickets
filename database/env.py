@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/lon8/python/notickets/')
+sys.path.append('/home/lon8/python/projects/notickets/') # For Laptop
 
 from logging.config import fileConfig
 

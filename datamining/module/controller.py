@@ -36,7 +36,7 @@ class Controller(Bot):
         session.commit()
     
     async def load_scripts(self):
-        scripts : list[tuple] = []
+        scripts = []
         with open(self.config_path, 'r') as config_file:
             config = json.load(config_file)
 
@@ -55,22 +55,20 @@ class Controller(Bot):
                             and obj != Parser
                             and config.get(module_name, False)
                         ):
-                            scripts.append((obj(), module_name))
+                            scripts.append(obj())
                 except Exception as e:
                     self.error(f"Failed to load {module_name}: {e}")
 
         return scripts
 
     async def run_scripts(self):
-        # [(module_object, module_name), ...]
-        script_and_name : list[tuple] = await self.load_scripts()
-        for script in script_and_name: self._clear_events(script[1])
-        tasks = [self.run_script_with_delay(script[0]) for script in script_and_name]
+        scripts : list = await self.load_scripts()
+        tasks = [self.run_script_with_delay(script) for script in scripts]
 
         await asyncio.gather(*tasks)
 
     async def run_script_with_delay(self, script):
-        
+        self._clear_events(script.__class__.__module__.split('.')[-1])
         await script.run()
         script.info('Программа успешно завершила работу')
         await asyncio.sleep(script.delay)
@@ -95,7 +93,6 @@ class Parser(Controller):
             venue = venue.replace('\n', ' ')
         
         parser = self.__class__.__module__.split('.')[-1]
-        self._clear_events(parser)
         
         log_time_format = '%Y-%m-%d %H:%M:%S'
         normal_date = datetime.strftime(date, log_time_format)
@@ -105,6 +102,7 @@ class Parser(Controller):
             link=link,
             parser=parser,
             date=normal_date,
+            venue=venue,
             average_price=avg_price
         )
         session.add(new_event)

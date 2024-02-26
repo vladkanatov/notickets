@@ -1,7 +1,5 @@
 import asyncio
-from console.cmd import DatabaseConsole
 import os
-from console.cmd import DatabaseConsole
 from datamining.module.controller import Controller
 
 if __name__ == "__main__":
