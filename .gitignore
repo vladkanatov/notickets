@@ -2,3 +2,6 @@
 venv/
 *.vs/
 *.log
+logs/
+.idea/
+.idea
