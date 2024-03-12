@@ -2,6 +2,7 @@
 venv/
 *.vs/
 *.log
+logs/
 .vscode/
 .idea/
 .idea
