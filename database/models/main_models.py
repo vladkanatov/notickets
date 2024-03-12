@@ -13,6 +13,7 @@ class AllEvents(Base):
     name = Column(String(255))  # Размер 255 (замените на нужный)
     link = Column(String(255))  # Размер 255 (замените на нужный)
     parser = Column(String(255))  # Размер 255 (замените на нужный)
+    venue = Column(String(255))
     date = Column(DateTime)
     average_price = Column(Integer)
 
@@ -68,6 +69,7 @@ class EventSites(Base):
     site_id = Column(Integer, ForeignKey('sites.id'), primary_key=True)
 
 Session = sessionmaker(bind=engine)
+
 session = Session()
 
 metadata = Base.metadata.create_all(bind=engine)
