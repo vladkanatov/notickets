@@ -1,5 +1,4 @@
 import asyncio
-import os
 from datamining.module.controller import Controller
 
 if __name__ == "__main__":
