@@ -1,9 +1,5 @@
-from datetime import datetime
-from typing import Optional
 from datamining.module.controller import Parser
 from datamining.module.logger import logger
-from bs4 import BeautifulSoup
-import requests
 
 
 class ParserName(Parser):
