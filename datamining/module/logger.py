@@ -48,6 +48,14 @@ class Logger:
         file_handler.setFormatter(file_formatter)
         self.logger.addHandler(file_handler)
 
+        # Добавляем DebugFileHandler
+        debug_log_path = os.path.join('logs', 'debug_logger.log')
+        debug_file_handler = logging.FileHandler(debug_log_path, encoding='utf-8')
+        debug_file_handler.setLevel(logging.DEBUG)
+        debug_file_handler.setFormatter(file_formatter)
+        self.logger.addHandler(debug_file_handler)
+
+        # Добавляем StdOutHandler
         console_handler = logging.StreamHandler()
         date_format = "%d-%m-%Y %H:%M:%S"
         console_handler.setFormatter(ColoredFormatter(

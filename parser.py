@@ -93,6 +93,7 @@ class Bileter(Parser):
 
     def put_db(self, events: list[tuple]) -> None:
         for event in events:
+            logger.debug(event)
             self.register_event(event_name=event[0], link=event[1], date=event[2], venue=event[3])
 
     async def main(self):
@@ -103,7 +104,7 @@ class Bileter(Parser):
             for page in range(5):
                 url += f'&page={page}'
 
-                r = requests.get(url, headers=self.headers)
+                r = await self.session.get(url, headers=self.headers)
 
                 if r.status_code != 200:
                     logger.error(f'Запрос завершился с кодом: {r.status_code}')
