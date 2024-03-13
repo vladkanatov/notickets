@@ -6,6 +6,7 @@ from sqlalchemy import delete
 from .logger import logger
 from database.models.main_models import AllEvents, session
 from .manager import user_agent
+from datamining.module.logger import parser_name
 
 
 class Controller:
@@ -22,8 +23,8 @@ class Controller:
         web-ресурсов"""
 
     @staticmethod
-    def _clear_events(parser):
-        delete_query = delete(AllEvents).where(getattr(AllEvents, "parser") == parser)
+    def _clear_events():
+        delete_query = delete(AllEvents).where(getattr(AllEvents, "parser") == parser_name)
 
         session.execute(delete_query)
 
@@ -48,8 +49,12 @@ class Controller:
         script = await self.load_script()
         if script:
             parser = script.name
-            self._clear_events(parser)
-            await script.main()
+            self._clear_events()
+            try:
+                await script.main()  # Запускаем async def main в parser.py
+            except AttributeError as e:
+                logger.error(e)
+
             logger.info(f'the script {parser} has successfully completed its work')
 
 
@@ -71,9 +76,7 @@ class Parser(Controller):
         if venue is not None:
             venue = venue.replace('\n', ' ')
 
-        parser = self.name
-        if parser == '':
-            logger.error('the parser name is not set')
+        parser = parser_name
 
         log_time_format = '%Y-%m-%d %H:%M:%S'
         normal_date = datetime.strftime(date, log_time_format)
