@@ -15,8 +15,6 @@ class Controller:
     def __init__(self):
         super().__init__()
 
-        self.session = AsyncSession()
-
         self.script = 'parser'
         self.user_agent = user_agent.random()
 
@@ -51,20 +49,23 @@ class Controller:
     async def run(self):
         script = await self.load_script()
         if script:
-            parser = script.name
             self._clear_events()
             try:
                 await script.main()  # Запускаем async def main в parser.py
             except AttributeError as e:
                 logger.error(e)
+                return
 
-            logger.info(f'the script {parser} has successfully completed its work')
+            logger.info(f'the script {parser_name} has successfully completed its work')
+            if script.session is not None:
+                await script.session.close()
 
 
 class Parser(Controller):
     def __init__(self):
         super().__init__()
 
+        self.session = AsyncSession()
         self.name = ''
 
     def register_event(
