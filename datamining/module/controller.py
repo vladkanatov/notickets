@@ -50,7 +50,7 @@ class Controller:
             parser = script.name
             self._clear_events(parser)
             await script.main()
-            logger.info(f'the script{parser} has successfully completed its work')
+            logger.info(f'the script {parser} has successfully completed its work')
 
 
 class Parser(Controller):

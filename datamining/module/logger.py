@@ -14,10 +14,25 @@ class Logger:
         # Добавляем логгер для текущего класса
         self.logger = logging.getLogger(git_branch)
         self.logger.setLevel(logging.DEBUG)
+        self._create_logs_dir()
         # Конфигурируем логгер
         self._setup_logger()
 
         self.user_agent = user_agent.random()
+
+    def _create_logs_dir(self):
+        import os
+
+        # Путь к папке логов
+        log_dir = '/home/lon8/python/projects/notickets/logs/'
+
+        # Проверяем наличие папки
+        if not os.path.exists(log_dir):
+            # Если папка отсутствует, создаем ее
+            os.makedirs(log_dir)
+            self.info(f"logs directory was created")
+        else:
+            pass
 
     def _setup_logger(self):
         # Удаляем все существующие обработчики
@@ -49,7 +64,7 @@ class Logger:
         ))
         self.logger.addHandler(console_handler)
 
-        self.info('Logger was started')
+        self.info('logger was started')
 
     def info(self, message: Any, *args):
         self.logger.info(message, *args)
