@@ -42,7 +42,7 @@ class Logger:
         # Добавляем FileHandler
         log_file_path_class = os.path.join('logs', f"{self.__class__.__name__.lower()}.log")
         file_handler = logging.FileHandler(log_file_path_class, encoding="utf-8")
-        file_handler.setLevel(logging.DEBUG)  # Уровень логов для файла
+        file_handler.setLevel(logging.INFO)  # Уровень логов для файла
         file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         file_handler.setFormatter(file_formatter)
         self.logger.addHandler(file_handler)
@@ -83,4 +83,4 @@ class Logger:
 
 
 logger = Logger()
-
+parser_name = git_branch
