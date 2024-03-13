@@ -1,7 +1,6 @@
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
-from datamining.module.logger import logger
 from datamining.module.controller import Parser
 
 
