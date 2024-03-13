@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from datamining.module.controller import Parser
 from datamining.module.logger import logger
+from datetime import datetime
 
 
 class Ticketland(Parser):
@@ -56,6 +57,25 @@ class Ticketland(Parser):
                 "klub-1930"
             ]
         }
+
+    def str_to_datetime(self, date_str: str) -> datetime:
+        months = {
+            "Янв": 1, "Фев": 2, "Мар": 3, "Апр": 4, "Мая": 5, "Июн": 6,
+            "Июл": 7, "Авг": 8, "Сен": 9, "Окт": 10, "Ноя": 11, "Дек": 12
+        }
+
+        # Разбиваем строку на части
+        parts = date_str.split()
+
+        # Получаем день, месяц, год, часы и минуты из строки
+        day = int(parts[0])
+        month = months[parts[1]]
+        year = int(parts[2])
+        hour, minute = map(int, parts[3].split(':'))
+
+        # Создаем объект datetime
+        dt = datetime(year, month, day, hour, minute)
+        return dt
 
     async def get_events(self, link, places_url, venue):
         events = []

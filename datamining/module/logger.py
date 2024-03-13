@@ -25,7 +25,7 @@ class Logger:
         import os
 
         # Путь к папке логов
-        log_dir = '/home/lon8/python/projects/notickets/logs/'
+        log_dir = 'logs'
 
         # Проверяем наличие папки
         if not os.path.exists(log_dir):
@@ -51,7 +51,7 @@ class Logger:
         console_handler = logging.StreamHandler()
         date_format = "%d-%m-%Y %H:%M:%S"
         console_handler.setFormatter(ColoredFormatter(
-            "\033[32m%(asctime)s\033[0m - %(log_color)s%(levelname)s%(reset)s - \033[35m%(name)s\033[0m > %(message)s",
+            "\033[32m%(asctime)s\033[0m - %(log_color)s%(levelname)s%(reset)s - \033[35m%(name)s\033[0m > %(log_color)s%(message)s%(reset)s",
             log_colors={
                 'DEBUG': 'cyan',
                 'INFO': 'green',
