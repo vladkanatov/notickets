@@ -7,12 +7,15 @@ from .logger import logger
 from database.models.main_models import AllEvents, session
 from .manager import user_agent
 from datamining.module.logger import parser_name
+from datamining.module.manager.session import AsyncSession
 
 
 class Controller:
 
     def __init__(self):
         super().__init__()
+
+        self.session = AsyncSession()
 
         self.script = 'parser'
         self.user_agent = user_agent.random()

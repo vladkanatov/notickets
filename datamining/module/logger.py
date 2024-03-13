@@ -8,6 +8,7 @@ import subprocess
 # Получаем текущую ветку Git
 git_branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip().decode('utf-8')
 
+
 class Logger:
 
     def __init__(self):
