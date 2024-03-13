@@ -1,13 +1,13 @@
 from bs4 import BeautifulSoup
-import requests
 from datamining.module.controller import Parser
+from datamining.module.logger import logger
+
 
 class Ticketland(Parser):
     
     def __init__(self):
         super().__init__()
-        self.delay = 1800
-        self.driver_source = None
+
         self.url = 'https://www.ticketland.ru/teatry/'
         self.our_places_data = {
             'https://sochi.ticketland.ru/teatry/': [
@@ -56,7 +56,7 @@ class Ticketland(Parser):
             ]
         }
 
-    def get_events(self, link, places_url, venue):
+    async def get_events(self, link, places_url, venue):
         events = []
         number_page = 0
         achtung = False
@@ -88,19 +88,19 @@ class Ticketland(Parser):
             elif 'sochi' in places_url:
                 headers['host'] = 'sochi.ticketland.ru'
 
-            r = requests.get(add_link, headers=headers)
+            r = await self.session.get(add_link, headers=headers)
             soup = BeautifulSoup(r.text, "lxml")
             cards = soup.find_all('div', class_='col')
             achtung = 'На выбранную дату нет мероприятий' in r.text
             for card in cards:
                 href = card.find('a', class_='card__image-link').get('href')
                 link_ = link.split('w')[0] + places_url.split('/')[2] + href
-                for event in self.get_cards(link_, venue):
+                for event in await self.get_cards(link_, venue):
                     events.append(event)
             number_page += 1
         return events
 
-    def get_cards(self, url, venue):
+    async def get_cards(self, url, venue):
         collected = []
         headers = {
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -131,7 +131,7 @@ class Ticketland(Parser):
             url = '/'.join(url.split('/')[-3:])
             url = 'https://sochi.ticketland.ru/teatry/' + url
 
-        r = requests.get(url, headers=headers)
+        r = await self.session.get(url, headers=headers)
         # time.sleep(1)
 
         soup = BeautifulSoup(r.text, 'lxml')
@@ -151,7 +151,6 @@ class Ticketland(Parser):
             month = month[:3].capitalize()
             time_ = card.find(class_='show-card__t').get_text().strip()
             formatted_date = f'{day} {month} {year} {time_}'
-            self.debug(formatted_date)
             btn = card.find(class_='btn btn--primary')
             if btn is None or btn in list_btn:
                 continue
@@ -167,7 +166,7 @@ class Ticketland(Parser):
             collected.append(card_)
         return collected
 
-    def get_links_teatrs(self, pagecount, places_url, our_places):
+    async def get_links_teatrs(self, pagecount, places_url, our_places):
         links_venues = []
         for p in range(1, int(pagecount) + 1):
             api = places_url + f"?page={p}&tab=all"
@@ -194,7 +193,7 @@ class Ticketland(Parser):
             elif 'sochi' in places_url:
                 headers['host'] = 'sochi.ticketland.ru'
 
-            r = requests.get(api, headers=headers)
+            r = await self.session.get(api, headers=headers)
             soup = BeautifulSoup(r.text, 'lxml')
             items = soup.find_all('div', class_='card-search')
             for item in items:
@@ -220,7 +219,7 @@ class Ticketland(Parser):
     #         raise Exception('Запрос с загрузкой')
     #     return r_text
 
-    def run(self):
+    async def main(self):
         for places_url, our_places in self.our_places_data.items():
             headers = {
                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -244,7 +243,7 @@ class Ticketland(Parser):
             elif 'sochi' in places_url:
                 headers['host'] = 'sochi.ticketland.ru'
 
-            r = requests.get(places_url, headers=headers)
+            r = await self.session.get(places_url, headers=headers)
             soup = BeautifulSoup(r.text, 'lxml')
             papers = soup.find_all('li', class_='search-pagination__item')
             if papers:
@@ -252,20 +251,18 @@ class Ticketland(Parser):
                 pagecount = last_paper.get('data-page-count')
             else:
                 pagecount = 1
-            teatr_links = self.get_links_teatrs(pagecount, places_url, our_places)
+            teatr_links = await self.get_links_teatrs(pagecount, places_url, our_places)
             for link, venue in teatr_links.items():
-                #self.debug(link)
-                for event in self.get_events(link, places_url, venue):
-                    #self.debug(event)
+                for event in await self.get_events(link, places_url, venue):
                     if 'gosudarstvennyy-kremlevskiy-dvorec' in our_places:
                         venue = 'Кремлёвский Дворец'
                         if 'kremlevskiy-dvorec/novogodnee-predstavlenie' not in event[1]:
                             continue
                     if len(event[1]) >= 200 or len(event[0]) >= 200:
-                        self.warning(event, venue, 'too long!!!!!!!!!!!!')
+                        logger.warning(event, venue, 'too long!!!!!!!!!!!!')
                         continue
-                    self.debug(event)
-                    self.register_event(event[0], event[1], date=event[2], venue=venue)
+                    logger.debug(event)
+                    # self.register_event(event[0], event[1], date=event[2], venue=venue)
 
     def filter_events_from_mikhailovsky(self, title, scene):
         skip_event = [
