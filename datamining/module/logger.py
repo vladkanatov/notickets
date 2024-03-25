@@ -9,6 +9,7 @@ import subprocess
 git_branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip().decode('utf-8')
 
 
+
 class _ColoredFormatter(ColoredFormatter):
     def format(self, record):
         record.git_branch = git_branch
