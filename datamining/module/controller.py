@@ -53,7 +53,7 @@ class Controller:
             try:
                 await script.main()  # Запускаем async def main в parser.py
             except AttributeError as e:
-                logger.error(e)
+                logger.error(f'parser down with error: {e}')
                 return
 
             logger.info(f'the script {parser_name} has successfully completed its work')
@@ -68,8 +68,8 @@ class Parser(Controller):
         self.session = AsyncSession()
         self.name = ''
 
+    @staticmethod
     def register_event(
-            self,
             event_name: str,
             link: str,
             date: datetime,

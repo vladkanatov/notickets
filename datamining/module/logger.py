@@ -9,11 +9,23 @@ import subprocess
 git_branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip().decode('utf-8')
 
 
+class _ColoredFormatter(ColoredFormatter):
+    def format(self, record):
+        record.git_branch = git_branch
+        return super(_ColoredFormatter, self).format(record)
+
+
+class _Formatter(logging.Formatter):
+    def format(self, record):
+        record.git_branch = git_branch
+        return super(_Formatter, self).format(record)
+
+
 class Logger:
 
     def __init__(self):
         # Добавляем логгер для текущего класса
-        self.logger = logging.getLogger(git_branch)
+        self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self._create_logs_dir()
         # Конфигурируем логгер
@@ -44,7 +56,7 @@ class Logger:
         log_file_path_class = os.path.join('logs', f"{self.__class__.__name__.lower()}.log")
         file_handler = logging.FileHandler(log_file_path_class, encoding="utf-8")
         file_handler.setLevel(logging.INFO)  # Уровень логов для файла
-        file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        file_formatter = _Formatter('%(asctime)s - %(git_branch)s - %(pathname)s:%(lineno)s - %(levelname)s - %(message)s')
         file_handler.setFormatter(file_formatter)
         self.logger.addHandler(file_handler)
 
@@ -58,8 +70,8 @@ class Logger:
         # Добавляем StdOutHandler
         console_handler = logging.StreamHandler()
         date_format = "%d-%m-%Y %H:%M:%S"
-        console_handler.setFormatter(ColoredFormatter(
-            "\033[32m%(asctime)s\033[0m - %(log_color)s%(levelname)s%(reset)s - \033[35m%(name)s\033[0m > %(log_color)s%(message)s%(reset)s",
+        console_handler.setFormatter(_ColoredFormatter(
+            "\033[32m%(asctime)s\033[0m - %(log_color)s%(levelname)s%(reset)s - \033[35m%(git_branch)s\033[0m > %(log_color)s%(message)s%(reset)s",
             log_colors={
                 'DEBUG': 'cyan',
                 'INFO': 'green',
