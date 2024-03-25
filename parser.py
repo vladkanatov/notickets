@@ -10,4 +10,3 @@ class ParserName(Parser):
         logger.info('Hello, parser')
 
         # self.register_event()
-
