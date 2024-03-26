@@ -22,7 +22,7 @@ class Ticketland(Parser):
                 #  'mikhaylovskiy-teatr',
             ],
             'https://www.ticketland.ru/teatry/': [
-                # 'teatr-lenkom',
+                'teatr-lenkom',
                 # 'mkht-im-chekhova',
                 # 'mkhat-im-m-gorkogo',
                 # 'malyy-teatr',
@@ -153,6 +153,8 @@ class Ticketland(Parser):
             url = 'https://sochi.ticketland.ru/teatry/' + url
 
         r = await self.session.get(url, headers=headers)
+        if r.status_code != 200:
+            logger.error(f'request ended with code: {r.status_code}')
         # time.sleep(1)
 
         soup = BeautifulSoup(r.text, 'lxml')
@@ -172,7 +174,6 @@ class Ticketland(Parser):
             month = month[:3].capitalize()
             time_ = card.find(class_='show-card__t').get_text().strip()
             formatted_date = f'{day} {month} {year} {time_}'
-            logger.debug(formatted_date)
             btn = card.find(class_='btn btn--primary')
             if btn is None or btn in list_btn:
                 continue
@@ -284,7 +285,7 @@ class Ticketland(Parser):
                         logger.warning(event, venue, 'too long!!!!!!!!!!!!')
                         continue
                     logger.debug(event)
-                    # self.register_event(event[0], event[1], date=event[2], venue=venue)
+                    await self.register_event(event[0], event[1], date=event[2], venue=venue)
 
     def filter_events_from_mikhailovsky(self, title, scene):
         skip_event = [
