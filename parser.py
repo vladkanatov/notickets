@@ -11,4 +11,3 @@ class ParserName(Parser):
     async def main(self):
         logger.info('Hello, parser')
 
-        # self.register_event()
