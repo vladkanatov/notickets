@@ -23,9 +23,7 @@ class MalyTeatr(Parser):
             'user-agent': self.user_agent
         }
 
-        # Нужно сделать
-        # r = await self.session.get(self.url + month_params, headers=headers
-        r = requests.get(self.url + month_params, headers=headers)
+        r = await self.session.get(self.url + month_params, headers=headers)
 
         return r.text
 
@@ -102,4 +100,4 @@ class MalyTeatr(Parser):
                 not_events_to_skip += 1
 
         for event in a_events:
-            self.register_event(event[0], event[1], date=event[2], venue='Малый театр')
+            await self.register_event(event[0], event[1], date=event[2], venue='Малый театр')
