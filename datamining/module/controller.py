@@ -68,7 +68,7 @@ class Parser(Controller):
         self.session: AsyncSession = AsyncSession()
         self.name = ''
 
-    def register_event(
+    async def register_event(
             self,
             event_name: str,
             link: str,
@@ -92,4 +92,4 @@ class Parser(Controller):
             "venue": venue
         }
 
-        self.session.post('http://188.120.244.63:8000/put_event/', json=new_event)
+        await self.session.post('http://188.120.244.63:8000/put_event/', json=new_event)
