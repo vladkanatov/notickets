@@ -4,7 +4,7 @@ from sqlalchemy.sql import func
 
 Base = declarative_base(metadata=MetaData())
 
-engine = create_engine('mysql://lon8:132465-Cs@localhost/eventservice')
+# engine = create_engine('mysql://lon8:132465-Cs@localhost/eventservice')
 
 class AllEvents(Base):
     __tablename__ = 'all_events'
@@ -68,8 +68,8 @@ class EventSites(Base):
     event_id = Column(Integer, ForeignKey('all_events.id'), primary_key=True)
     site_id = Column(Integer, ForeignKey('sites.id'), primary_key=True)
 
-Session = sessionmaker(bind=engine)
+# Session = sessionmaker(bind=engine)
 
-session = Session()
+# session = Session()
 
-metadata = Base.metadata.create_all(bind=engine)
+# metadata = Base.metadata.create_all(bind=engine)

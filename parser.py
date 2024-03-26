@@ -8,4 +8,14 @@ class ParserName(Parser):
         super().__init__()
 
     async def main(self):
-        pass
+        r = await self.session.get('https://mxat.ru/timetable/')
+
+        soup = BeautifulSoup(r.text, "lxml")
+
+        divs = soup.find_all('div', class_= 'event')
+
+        for div in divs:
+
+            text = div.text
+
+            logger.info(text)
