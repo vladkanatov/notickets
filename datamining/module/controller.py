@@ -6,6 +6,8 @@ from sqlalchemy import delete
 from .logger import logger
 from database.models.main_models import AllEvents, session
 from .manager import user_agent
+from datamining.module.logger import parser_name
+from datamining.module.manager.session import AsyncSession
 
 
 class Controller:
@@ -22,8 +24,8 @@ class Controller:
         web-ресурсов"""
 
     @staticmethod
-    def _clear_events(parser):
-        delete_query = delete(AllEvents).where(getattr(AllEvents, "parser") == parser)
+    def _clear_events():
+        delete_query = delete(AllEvents).where(getattr(AllEvents, "parser") == parser_name)
 
         session.execute(delete_query)
 
@@ -47,44 +49,49 @@ class Controller:
     async def run(self):
         script = await self.load_script()
         if script:
-            parser = script.name
-            self._clear_events(parser)
-            await script.main()
-            logger.info(f'the script {parser} has successfully completed its work')
+            self._clear_events()
+            try:
+                await script.main()  # Запускаем async def main в parser.py
+            except AttributeError as e:
+                logger.error(f'parser down with error: {e}')
+                return
+
+            logger.info(f'the script {parser_name} has successfully completed its work')
+            if script.session is not None:
+                await script.session.close()
 
 
 class Parser(Controller):
     def __init__(self):
         super().__init__()
 
+        self.session: AsyncSession = AsyncSession()
         self.name = ''
 
-    def register_event(
+    async def register_event(
             self,
             event_name: str,
             link: str,
             date: datetime,
-            venue: str = None,
-            avg_price: int = -1):
+            venue: str = None):
 
         event_name = event_name.replace('\n', ' ')
         if venue is not None:
             venue = venue.replace('\n', ' ')
 
-        parser = self.name
-        if parser == '':
-            logger.error('the parser name is not set')
+        parser = parser_name
 
         log_time_format = '%Y-%m-%d %H:%M:%S'
         normal_date = datetime.strftime(date, log_time_format)
 
-        new_event = AllEvents(
-            name=event_name,
-            link=link,
-            parser=parser,
-            date=normal_date,
-            venue=venue,
-            average_price=avg_price
-        )
-        session.add(new_event)
-        session.commit()
+        new_event = {
+            "name": event_name,
+            "link": link,
+            "parser": parser,
+            "date": normal_date,
+            "venue": venue
+        }
+
+        r = await self.session.post('http://188.120.244.63:8000/put_event/', json=new_event)
+        if r.status_code != 200:
+            logger.error(f"the request to the allocator ended with the code: {r.status_code}")
