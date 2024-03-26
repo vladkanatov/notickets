@@ -91,10 +91,10 @@ class Bileter(Parser):
     def get_link_from_list(self, event: BeautifulSoup) -> str:
         return "https://www.bileter.ru" + event.find('a')['href']
 
-    def put_db(self, events: list[tuple]) -> None:
+    async def put_db(self, events: list[tuple]) -> None:
         for event in events:
             logger.debug(event)
-            self.register_event(event_name=event[0], link=event[1], date=event[2], venue=event[3])
+            await self.register_event(event_name=event[0], link=event[1], date=event[2], venue=event[3])
 
     async def main(self):
         events_list = []
@@ -136,4 +136,4 @@ class Bileter(Parser):
                             date = self.get_date_from_list(ticket)
 
                             events_list.append((title, link, date, venue))
-        self.put_db(events_list)
+        await self.put_db(events_list)
