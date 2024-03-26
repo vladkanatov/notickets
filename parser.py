@@ -1,5 +1,6 @@
 from datamining.module.controller import Parser
 from datamining.module.logger import logger
+from bs4 import BeautifulSoup
 
 
 class ParserName(Parser):
@@ -7,6 +8,12 @@ class ParserName(Parser):
         super().__init__()
 
     async def main(self):
-        logger.info('Hello, parser')
+        r = await self.session.get('https://mxat.ru/timetable/')
 
-        # self.register_event()
+        soup = BeautifulSoup(r.text, 'lxml')
+
+        divs = soup.find_all('div', class_='ttl')
+
+        for div in divs:
+            text = div.text
+            logger.info(text)
