@@ -57,7 +57,7 @@ class Controller:
     async def run(self):
         script = await self.load_script()
         if script:
-            await self._clear_events(script.session)
+            await self._clear_events(script.session) # Берем сессию, созданную в классе Parser
             try:
                 await script.main()  # Запускаем async def main в parser.py
             except AttributeError as e:
