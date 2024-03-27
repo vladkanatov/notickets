@@ -2,9 +2,7 @@ from datetime import datetime
 import importlib
 import inspect
 
-from sqlalchemy import delete
 from .logger import logger
-from database.models.main_models import AllEvents, session
 from .manager import user_agent
 from datamining.module.logger import parser_name
 from datamining.module.manager.session import AsyncSession
@@ -23,14 +21,24 @@ class Controller:
         скриптов для парсинга информации с различных
         web-ресурсов"""
 
+    # Старая версия. Это скоро пропадёт
+    # @staticmethod
+    # def _clear_events():
+    #     delete_query = delete(AllEvents).where(getattr(AllEvents, "parser") == parser_name)
+    #
+    #     session.execute(delete_query)
+    #
+    #     # Подтверждаем изменения
+    #     session.commit()
+
     @staticmethod
-    def _clear_events():
-        delete_query = delete(AllEvents).where(getattr(AllEvents, "parser") == parser_name)
+    async def _clear_events(session: AsyncSession):
 
-        session.execute(delete_query)
-
-        # Подтверждаем изменения
-        session.commit()
+        payload = {
+            'parser': parser_name
+        }
+        r = await session.post('http://188.120.244.63:8000/clear_events/', json=payload)
+        logger.debug(f'request for clear: {r.status_code}')
 
     async def load_script(self):
         try:
@@ -49,11 +57,11 @@ class Controller:
     async def run(self):
         script = await self.load_script()
         if script:
-            self._clear_events()
+            await self._clear_events(script.session) # Берем сессию, созданную в классе Parser
             try:
                 await script.main()  # Запускаем async def main в parser.py
             except AttributeError as e:
-                logger.error(e)
+                logger.error(f'parser down with error: {e}')
                 return
 
             logger.info(f'the script {parser_name} has successfully completed its work')
@@ -65,16 +73,15 @@ class Parser(Controller):
     def __init__(self):
         super().__init__()
 
-        self.session = AsyncSession()
+        self.session: AsyncSession = AsyncSession()
         self.name = ''
 
-    def register_event(
+    async def register_event(
             self,
             event_name: str,
             link: str,
             date: datetime,
-            venue: str = None,
-            avg_price: int = -1):
+            venue: str = None):
 
         event_name = event_name.replace('\n', ' ')
         if venue is not None:
@@ -85,13 +92,14 @@ class Parser(Controller):
         log_time_format = '%Y-%m-%d %H:%M:%S'
         normal_date = datetime.strftime(date, log_time_format)
 
-        new_event = AllEvents(
-            name=event_name,
-            link=link,
-            parser=parser,
-            date=normal_date,
-            venue=venue,
-            average_price=avg_price
-        )
-        session.add(new_event)
-        session.commit()
+        new_event = {
+            "name": event_name,
+            "link": link,
+            "parser": parser,
+            "date": normal_date,
+            "venue": venue
+        }
+
+        r = await self.session.post('http://188.120.244.63:8000/put_event/', json=new_event)
+        if r.status_code != 200:
+            logger.error(f"the request to the allocator ended with the code: {r.status_code}")
