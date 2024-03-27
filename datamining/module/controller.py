@@ -2,9 +2,7 @@ from datetime import datetime
 import importlib
 import inspect
 
-from sqlalchemy import delete
 from .logger import logger
-from database.models.main_models import AllEvents, session
 from .manager import user_agent
 from datamining.module.logger import parser_name
 from datamining.module.manager.session import AsyncSession
@@ -23,14 +21,24 @@ class Controller:
         скриптов для парсинга информации с различных
         web-ресурсов"""
 
+    # Старая версия. Это скоро пропадёт
+    # @staticmethod
+    # def _clear_events():
+    #     delete_query = delete(AllEvents).where(getattr(AllEvents, "parser") == parser_name)
+    #
+    #     session.execute(delete_query)
+    #
+    #     # Подтверждаем изменения
+    #     session.commit()
+
     @staticmethod
-    def _clear_events():
-        delete_query = delete(AllEvents).where(getattr(AllEvents, "parser") == parser_name)
+    async def _clear_events(session: AsyncSession):
 
-        session.execute(delete_query)
-
-        # Подтверждаем изменения
-        session.commit()
+        payload = {
+            'parser': parser_name
+        }
+        r = await session.post('http://188.120.244.63:8000/clear_events/', json=payload)
+        logger.debug(f'request for clear: {r.status_code}')
 
     async def load_script(self):
         try:
@@ -49,7 +57,7 @@ class Controller:
     async def run(self):
         script = await self.load_script()
         if script:
-            self._clear_events()
+            await self._clear_events(script.session) # Берем сессию, созданную в классе Parser
             try:
                 await script.main()  # Запускаем async def main в parser.py
             except AttributeError as e:
