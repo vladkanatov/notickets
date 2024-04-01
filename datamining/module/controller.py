@@ -56,7 +56,7 @@ class Controller:
     async def run(self):
         script = await self.load_script()
         if script:
-            await self._clear_events()
+            # await self._clear_events()
             try:
                 await script.main()  # Запускаем async def main в parser.py
             except AttributeError as e:

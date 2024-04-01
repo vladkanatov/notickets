@@ -19,3 +19,9 @@ class ParserName(Parser):
             text = div.text
 
             logger.info(text)
+
+            div.find ('div', class_= 'ttl')
+
+            x =  div.find ('div', class_= 'ttl')
+
+            logger.debug(x.text)
