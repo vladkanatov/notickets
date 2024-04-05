@@ -32,12 +32,12 @@ class Controller:
     #     session.commit()
 
     @staticmethod
-    async def _clear_events(session: AsyncSession):
+    async def _clear_events(script):
 
         payload = {
             'parser': parser_name
         }
-        r = await session.post('http://188.120.244.63/clear_events/', json=payload)
+        r = await script.session.post('http://188.120.244.63:8000/clear_events/', json=payload)
         logger.debug(f'request for clear: {r.status_code}')
 
     async def load_script(self):
@@ -57,8 +57,8 @@ class Controller:
     async def run(self):
         script = await self.load_script()
         if script:
+            await self._clear_events(script) # Берем сессию, созданную в классе Parser
             try:
-                await self._clear_events(script.session)
                 await script.main()  # Запускаем async def main в parser.py
             except AttributeError as e:
                 logger.error(f'parser down with error: {e}')
