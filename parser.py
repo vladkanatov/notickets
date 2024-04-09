@@ -58,7 +58,8 @@ class Ticketland(Parser):
             ]
         }
 
-    def str_to_datetime(self, date_str: str) -> datetime:
+    @staticmethod
+    def str_to_datetime( date_str: str) -> datetime:
         months = {
             "Янв": 1, "Фев": 2, "Мар": 3, "Апр": 4, "Мая": 5, "Июн": 6,
             "Июл": 7, "Авг": 8, "Сен": 9, "Окт": 10, "Ноя": 11, "Дек": 12
@@ -287,7 +288,8 @@ class Ticketland(Parser):
                     logger.debug(event)
                     await self.register_event(event[0], event[1], date=event[2], venue=venue)
 
-    def filter_events_from_mikhailovsky(self, title, scene):
+    @staticmethod
+    def filter_events_from_mikhailovsky(title, scene):
         skip_event = [
             ['Лебединое озеро', 'Главный зал'],
             ['Щелкунчик', 'Главный зал'],
