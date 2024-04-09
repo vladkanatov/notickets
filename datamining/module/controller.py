@@ -5,7 +5,7 @@ import inspect
 from .logger import logger
 from .manager import user_agent
 from datamining.module.logger import parser_name
-from datamining.module.manager.session import AsyncSession
+from datamining.module.manager.session import AsyncSession, AsyncProxySession
 
 
 class Controller:
@@ -73,7 +73,8 @@ class Parser(Controller):
     def __init__(self):
         super().__init__()
 
-        self.session: AsyncSession = AsyncSession()
+        # self.session: AsyncSession = AsyncSession()
+        self.session: AsyncProxySession = AsyncProxySession()
         self.name = ''
 
     async def register_event(
