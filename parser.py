@@ -11,7 +11,4 @@ class Template(Parser):
         super().__init__()
 
     async def main(self):
-
-        for i in range(5):
-            r = await self.session.get('https://api.ipify.org/')
-            logger.debug(r.text)
+        pass
