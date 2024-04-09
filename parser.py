@@ -88,5 +88,5 @@ class Lenkom(Parser):
         a_events = await self.get_events()
 
         for event in a_events:
-            self.register_event(event[0], event[1], date=event[2], venue='Театр Ленком')
+            await self.register_event(event[0], event[1], date=event[2], venue='Театр Ленком')
             logger.debug(event)
