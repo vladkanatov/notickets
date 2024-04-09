@@ -5,7 +5,7 @@ import inspect
 from .logger import logger
 from .manager import user_agent
 from datamining.module.logger import parser_name
-from datamining.module.manager.session import AsyncSession
+from datamining.module.manager.session import AsyncSession, AsyncProxySession
 
 
 class Controller:
@@ -32,12 +32,12 @@ class Controller:
     #     session.commit()
 
     @staticmethod
-    async def _clear_events(session: AsyncSession):
+    async def _clear_events(script):
 
         payload = {
             'parser': parser_name
         }
-        r = await session.post('http://188.120.244.63:8000/clear_events/', json=payload)
+        r = await script.session.post('http://188.120.244.63:8000/clear_events/', json=payload)
         logger.debug(f'request for clear: {r.status_code}')
 
     async def load_script(self):
@@ -57,7 +57,7 @@ class Controller:
     async def run(self):
         script = await self.load_script()
         if script:
-            await self._clear_events(script.session) # Берем сессию, созданную в классе Parser
+            await self._clear_events(script) # Берем сессию, созданную в классе Parser
             try:
                 await script.main()  # Запускаем async def main в parser.py
             except AttributeError as e:
@@ -73,7 +73,8 @@ class Parser(Controller):
     def __init__(self):
         super().__init__()
 
-        self.session: AsyncSession = AsyncSession()
+        # self.session: AsyncSession = AsyncSession()
+        self.session: AsyncProxySession = AsyncProxySession()
         self.name = ''
 
     async def register_event(
