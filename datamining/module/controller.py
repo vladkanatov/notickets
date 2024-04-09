@@ -5,7 +5,7 @@ import inspect
 from .logger import logger
 from .manager import user_agent
 from datamining.module.logger import parser_name
-from datamining.module.manager.session import AsyncSession, AsyncProxySession
+from datamining.module.manager.session import AsyncProxySession
 
 
 class Controller:
