@@ -27,7 +27,8 @@ class MalyTeatr(Parser):
 
         return r.text
 
-    def str_to_datetime(self, date_str: str) -> datetime:
+    @staticmethod
+    def str_to_datetime(date_str: str) -> datetime:
         months = {
             "Янв": 1, "Фев": 2, "Мар": 3, "Апр": 4, "Мая": 5, "Июн": 6,
             "Июл": 7, "Авг": 8, "Сен": 9, "Окт": 10, "Ноя": 11, "Дек": 12
@@ -46,7 +47,8 @@ class MalyTeatr(Parser):
         dt = datetime(year, month, day, hour, minute)
         return dt
 
-    def get_next_month_params(self, months_container):
+    @staticmethod
+    def get_next_month_params(months_container):
         month_params = ''
 
         next_year_href = months_container.find_all('a')[-1]['href']
