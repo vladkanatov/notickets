@@ -42,12 +42,14 @@ class Bileter(Parser):
             'https://www.bileter.ru/afisha?building[]=bolshoy_kontsertnyiy_zal_oktyabrskiy.html'  # БКЗ "Октябрьский"
         ]
 
-    def reformat_venue(self, venue: str) -> Optional[str]:
+    @staticmethod
+    def reformat_venue(venue: str) -> Optional[str]:
         return {
             'Александрийский театр': 'Александрийский театр!'
         }.get(venue, None)
 
-    def month_string_to_number(self, month):
+    @staticmethod
+    def month_string_to_number(month):
         return {
             'Января': 1, 'Февраля': 2, 'Марта': 3, 'Апреля': 4,
             'Мая': 5, 'Июня': 6, 'Июля': 7, 'Августа': 8,
@@ -77,7 +79,8 @@ class Bileter(Parser):
         datetime_date = self.str_to_datetime(date)
         return datetime_date
 
-    def get_link(self, event: BeautifulSoup) -> str:
+    @staticmethod
+    def get_link(event: BeautifulSoup) -> str:
         price_block = event.find('div', class_='price')
         link = "https://www.bileter.ru" + price_block.find('a')['href']
         return link
@@ -88,7 +91,8 @@ class Bileter(Parser):
         datetime_date = self.str_to_datetime(date)
         return datetime_date
 
-    def get_link_from_list(self, event: BeautifulSoup) -> str:
+    @staticmethod
+    def get_link_from_list(event: BeautifulSoup) -> str:
         return "https://www.bileter.ru" + event.find('a')['href']
 
     async def put_db(self, events: list[tuple]) -> None:
