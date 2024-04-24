@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-pod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bileter-ru-pod
+  template:
+    metadata:
+      labels:
+        app: bileter-ru-pod
+    spec:
+      containers:
+      - name: evhub-bileter-ru
+        image: lon8/evhub-bileter-ru:0.1 # Замените на ваш образ и тег
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: bileter-cronjob
+spec:
+  schedule: "*/4 * * * *" # Запускать каждые 4 минуты
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: evhub-bileter-ru
+            image: lon8/evhub-bileter-ru:0.1 # Замените на образ, который выполняет работу, которую вы хотите выполнить каждые 4 минуты
+          restartPolicy: OnFailure
