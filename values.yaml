@@ -21,7 +21,7 @@ kind: CronJob
 metadata:
   name: bileter-cronjob
 spec:
-  schedule: "*/4 * * * *" # Запускать каждые 4 минуты
+  schedule: "*/2 * * * *" # Запускать каждые 4 минуты
   jobTemplate:
     spec:
       template:
