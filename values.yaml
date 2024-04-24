@@ -1,21 +1,21 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: bileter-ru-pod
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: bileter-ru-pod
-  template:
-    metadata:
-      labels:
-        app: bileter-ru-pod
-    spec:
-      containers:
-      - name: evhub-bileter-ru
-        image: lon8/evhub-bileter-ru:0.1 # Замените на ваш образ и тег
----
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: bileter-ru-pod
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: bileter-ru-pod
+#   template:
+#     metadata:
+#       labels:
+#         app: bileter-ru-pod
+#     spec:
+#       containers:
+#       - name: evhub-bileter-ru
+#         image: lon8/evhub-bileter-ru:0.1 # Замените на ваш образ и тег
+# ---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
