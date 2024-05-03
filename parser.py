@@ -15,3 +15,4 @@ class Template(Parser):
         for i in range(5):
             r = await self.session.get('https://api.ipify.org/')
             logger.debug(r.text)
+            logger.debug("Hello")
