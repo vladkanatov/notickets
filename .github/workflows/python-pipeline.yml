@@ -2,7 +2,7 @@ name: Python application
 
 on:
   push:
-    branches: [ "pipeline" ]
+    branches: [ "pipeline", "pipeline_tags" ]
   pull_request:
     branches: [ "main" ]
 
@@ -22,6 +22,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Generate build ID
+      id: prep
+      run: |
+          branch=${GITHUB_REF##*/}
+          sha=${GITHUB_SHA::8}
+          ts=$(date +%s)
+          echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
     - uses: actions/checkout@v4
     - name: Set up Python 3.11
       uses: actions/setup-python@v3
@@ -46,5 +53,5 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build and push Docker image
       run: |
-        docker build . -t ghcr.io/${{ github.repository_owner }}/base-pipeline:latest
-        docker push ghcr.io/${{ github.repository_owner }}/base-pipeline:latest
+        docker build . -t ghcr.io/${{ github.repository_owner }}/base-pipeline:${{ steps.prep.outputs.BUILD_ID }}
+        docker push ghcr.io/${{ github.repository_owner }}/base-pipeline:${{ steps.prep.outputs.BUILD_ID }}
