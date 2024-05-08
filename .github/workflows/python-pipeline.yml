@@ -53,5 +53,5 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build and push Docker image
       run: |
-        docker build . -t ghcr.io/${{ github.repository_owner }}/base-pipeline:${{ steps.prep.outputs.BUILD_ID }}
-        docker push ghcr.io/${{ github.repository_owner }}/base-pipeline:${{ steps.prep.outputs.BUILD_ID }}
+        docker build . -t ghcr.io/${{ github.repository_owner }}/base-pipeline:${{ github.sha }}-${{ github.run_number }}
+        docker push ghcr.io/${{ github.repository_owner }}/base-pipeline:${{ github.sha }}-${{ github.run_number }}
