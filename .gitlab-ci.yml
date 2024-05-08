@@ -25,14 +25,16 @@ run_main:
     - pip install -r requirements.txt
     - python main.py
 
-login_to_registry:
+#login_to_registry:
+#  image: docker:19.03.12
+#  stage: deploy
+#  script:
+#    - echo $CI_JOB_TOKEN | docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+
+build_and_push_docker:
   image: docker:19.03.12
   stage: deploy
   script:
-    - echo $CI_JOB_TOKEN | docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-
-build_and_push_docker:
-  stage: deploy
-  script:
+    - echo "$CI_JOB_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - docker build . -t "ghcr.io/$CI_REGISTRY_USER/base-pipeline:0.1"
     - docker push "ghcr.io/$CI_REGISTRY_USER/base-pipeline:0.1"
