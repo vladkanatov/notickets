@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  DB: ${{ secrets.DB_NAME }}
+  HOST: ${{ secrets.DB_HOST }}
+  LOGIN: ${{ secrets.DB_LOGIN }}
+  PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 permissions:
   contents: read
 
