@@ -15,13 +15,14 @@ lint:
   script:
     - pip install --upgrade pip
     - pip install flake8 mysqlclient
-    - test -f requirements.txt && pip install -r requirements.txt
+    - test -f requirements.txt
     - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
 run_main:
   stage: build
   script:
+    - pip install -r requirements.txt
     - python main.py
 
 login_to_registry:
