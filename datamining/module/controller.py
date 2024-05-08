@@ -73,8 +73,8 @@ class Parser(Controller):
     def __init__(self):
         super().__init__()
 
-        # self.session: AsyncSession = AsyncSession()
-        self.session: AsyncProxySession = AsyncProxySession()
+        self.session: AsyncSession = AsyncSession()
+        # self.session: AsyncProxySession = AsyncProxySession()
         self.name = ''
 
     async def register_event(
