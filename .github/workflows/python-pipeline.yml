@@ -36,6 +36,8 @@ jobs:
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+  running:
+
     - name: Run main.py
       run: python main.py
     - name: Login to GitHub Container Registry
@@ -44,6 +46,7 @@ jobs:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
+  package build and push:
     - name: Build and push Docker image
       run: |
         docker build . -t ghcr.io/${{ github.repository_owner }}/your-image-name:latest
