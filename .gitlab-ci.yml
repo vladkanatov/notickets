@@ -18,21 +18,21 @@ cache:
 stages:
   - build
 
-install requirements:
+install_requirements:
   before_script:
-    - pip install virtualenv
+    - python -m pip install --upgrade pip
+    - python -m pip install virtualenv
     - virtualenv venv
     - source venv/bin/activate
 
   script:
-    - pip install --upgrade pip
-    - pip install mysqlclient
-    - test -f requirements.txt
+    - python -m pip install -r requirements.txt
+    - python -m pip install mysqlclient
 
 lint:
   stage: build
   script:
-    - pip install flake8
+    - python -m pip install flake8
     - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
@@ -40,12 +40,6 @@ tests:
   stage: build
   script:
     - python main.py
-
-#login_to_registry:
-#  image: docker:19.03.12
-#  stage: deploy
-#  script:
-#    - echo $CI_JOB_TOKEN | docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
 build_and_push_docker:
   variables:
