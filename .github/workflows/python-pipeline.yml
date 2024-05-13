@@ -47,6 +47,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 mysqlclient
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Activate virtual environment
+      run: source ./.venv/bin/activate
     - name: Lint with flake8
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
