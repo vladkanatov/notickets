@@ -1,10 +1,27 @@
-image: python:3.11
-
 variables:
   DB: "$DB_NAME"
   HOST: "$DB_HOST"
   LOGIN: "$DB_LOGIN"
   PASSWORD: "$DB_PASSWORD"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+default:
+  image: python:11
+  cache:                      # Pip's cache doesn't store the python packages
+    paths:                    # https://pip.pypa.io/en/stable/topics/caching/
+      - .cache/pip
+      - .venv
+  before_script:
+    - python -V               # Print out python version for debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+
+stages:
+  - build
+  - lint
+  - test
+  - deploy
 
 cache:
   key:
@@ -15,34 +32,25 @@ cache:
     - .venv
     - .cache/pip
 
-stages:
-  - build
-  - test
-  - deploy
-
-install_requirements:
+build:
   stage: build
-  before_script:
-    - python -m pip install --upgrade pip
-    - python -m pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
-
   script:
-    - python -m pip install -r requirements.txt
-    - python -m pip install mysqlclient
+    # Устанавливаем зависимости из кэша, если они есть
+    - pip install --no-cache-dir --find-links=$PIP_CACHE_DIR --cache-dir=$PIP_CACHE_DIR -r requirements.txt
 
 lint:
-  stage: test
+  stage: lint
   script:
-    - python -m pip install flake8
-    - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-    - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    # Устанавливаем линтер flake8
+    - pip install flake8
+    # Запускаем линтер
+    - flake8 .
 
-tests:
+test:
   stage: test
   script:
-    - . .venv/bin/activate/ && python main.py
+    # Запускаем main.py
+    - python main.py
 
 build_and_push_docker:
   variables:
