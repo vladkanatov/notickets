@@ -13,7 +13,7 @@ LOGIN = config('LOGIN')
 # Функция для получения списка названий площадок из базы данных
 @cached(cache=TTLCache(maxsize=128, ttl=600))
 async def get_venue_names_from_database():
-    async with aiomysql.create_pool(host=HOST, port=int(PORT),
+    async with aiomysql.create_pool(host=HOST, port=3306,
                                     user=LOGIN, password=PASSWORD,
                                     db=DB) as pool:
         async with pool.acquire() as conn:
