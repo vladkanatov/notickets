@@ -19,6 +19,8 @@ default:
     - python -V               # Print out python version for debugging
     - pip install virtualenv
     - virtualenv venv
+    # Проверяем, есть ли кэш виртуального окружения, и используем его, если есть
+    - if [ -d "$PIP_CACHE_DIR/venv" ]; then cp -r $PIP_CACHE_DIR/venv .; fi
     - source venv/bin/activate
 
 stages:
@@ -26,7 +28,6 @@ stages:
   - lint
   - test
   - deploy
-
 
 build:
   stage: build
