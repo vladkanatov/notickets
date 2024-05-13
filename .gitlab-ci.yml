@@ -7,10 +7,14 @@ variables:
 
 default:
   image: python:11
-  cache:                      # Pip's cache doesn't store the python packages
-    paths:                    # https://pip.pypa.io/en/stable/topics/caching/
-      - .cache/pip
+  cache:
+    key:
+      files:
+        - requirements.txt
+      prefix: ${CI_JOB_NAME}
+    paths:
       - .venv
+      - .cache/pip
   before_script:
     - python -V               # Print out python version for debugging
     - pip install virtualenv
@@ -23,14 +27,6 @@ stages:
   - test
   - deploy
 
-cache:
-  key:
-    files:
-      - requirements.txt
-    prefix: ${CI_JOB_NAME}
-  paths:
-    - .venv
-    - .cache/pip
 
 build:
   stage: build
