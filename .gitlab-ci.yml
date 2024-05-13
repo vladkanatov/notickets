@@ -40,7 +40,7 @@ lint:
 tests:
   stage: build
   script:
-    - python main.py
+    - . .venv/bin/activate/ && python main.py
 
 build_and_push_docker:
   variables:
