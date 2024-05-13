@@ -43,16 +43,15 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-venv-
     - name: Install dependencies
-      if: steps.cache-venv.outputs.cache-hit != 'true'
-      run: |  
-        python -m venv ./.venv
-        source ./.venv/bin/activate
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install flake8 mysqlclient
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      env:
+        PYTHONUSERBASE: './.cache'
     - name: Lint with flake8
       run: |
-        . ./.venv/bin/activate
+        pip install flake8
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test main.py
