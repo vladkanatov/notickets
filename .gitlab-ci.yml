@@ -17,6 +17,8 @@ cache:
 
 stages:
   - build
+  - test
+  - deploy
 
 install_requirements:
   stage: build
@@ -31,14 +33,14 @@ install_requirements:
     - python -m pip install mysqlclient
 
 lint:
-  stage: build
+  stage: test
   script:
     - python -m pip install flake8
     - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
 tests:
-  stage: build
+  stage: test
   script:
     - . .venv/bin/activate/ && python main.py
 
@@ -46,7 +48,7 @@ build_and_push_docker:
   variables:
     CI_VERSION: "1.0.${CI_JOB_ID}"
   image: docker:20.10.16
-  stage: build
+  stage: deploy
   services:
     - docker:20.10.16-dind
   script:
