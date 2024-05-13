@@ -1,0 +1,43 @@
+image: python:3.11
+
+variables:
+  DB: "$DB_NAME"
+  HOST: "$DB_HOST"
+  LOGIN: "$DB_LOGIN"
+  PASSWORD: "$DB_PASSWORD"
+
+stages:
+  - build
+
+lint:
+  stage: build
+  script:
+    - pip install --upgrade pip
+    - pip install flake8 mysqlclient
+    - test -f requirements.txt
+    - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+tests:
+  stage: build
+  script:
+    - pip install -r requirements.txt
+    - python main.py
+
+#login_to_registry:
+#  image: docker:19.03.12
+#  stage: deploy
+#  script:
+#    - echo $CI_JOB_TOKEN | docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+
+build_and_push_docker:
+  variables:
+    CI_VERSION: "1.0.${CI_JOB_ID}"
+  image: docker:20.10.16
+  stage: build
+  services:
+    - docker:20.10.16-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t "ghcr.io/$CI_REGISTRY_USER/base-pipeline:${CI_COMMIT_SHA:0:8}-$CI_PIPELINE_IID" .
+    - docker push "ghcr.io/$CI_REGISTRY_USER/base-pipeline:${CI_COMMIT_SHA:0:8}-$CI_PIPELINE_IID"
