@@ -40,12 +40,12 @@ jobs:
           ${{ runner.os }}-python-
 
     - name: Cache Docker layers
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
-        path: /usr/lib/docker
-        key: ${{ runner.os }}-docker-${{ github.sha }}
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-docker-
+          ${{ runner.os }}-buildx-   
 
     - name: Install dependencies
       run: |
@@ -67,7 +67,15 @@ jobs:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build and push Docker image
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/${{ github.repository_owner }}/base-pipeline:${{ github.sha }}-${{ github.run_number }}
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+    - name: Move cache
       run: |
-        docker build . -t ghcr.io/${{ github.repository_owner }}/base-pipeline:${{ github.sha }}-${{ github.run_number }}
-        docker push ghcr.io/${{ github.repository_owner }}/base-pipeline:${{ github.sha }}-${{ github.run_number }}
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
