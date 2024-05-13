@@ -44,15 +44,16 @@ jobs:
     - name: Install dependencies
       if: steps.cache-venv.outputs.cache-hit != 'true'
       run: |  
-        - run: python -m venv ./.venv && . ./.venv/bin/activate &&
+        - run: python -m venv ./.venv && source ./.venv/bin/activate &&
            pip install -r requirements.txt && pip install flake8 mysqlclient
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
+        source ./.venv/bin/activate
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test main.py
-      run: . ./.venv/bin/activate && python main.py
+      run: source ./.venv/bin/activate && python main.py
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v2
       with:
