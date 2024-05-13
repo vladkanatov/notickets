@@ -53,7 +53,7 @@ jobs:
 
     - name: Test main.py
       run: |
-        find / -type d -name ".venv"
+        find . -type d -name ".venv"
         source ./venv/bin/activate && python main.py
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v2
