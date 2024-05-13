@@ -6,7 +6,6 @@ from .logger import logger
 from .manager import user_agent
 from datamining.module.logger import parser_name
 from datamining.module.manager.session import AsyncSession, AsyncProxySession
-from datamining.module.ai.venue import find_or_create_venue
 
 
 class Controller:
@@ -93,8 +92,6 @@ class Parser(Controller):
 
         log_time_format = '%Y-%m-%d %H:%M:%S'
         normal_date = datetime.strftime(date, log_time_format)
-        
-        venue_id = await find_or_create_venue(venue)
 
         new_event = {
             "name": event_name,
