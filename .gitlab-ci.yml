@@ -4,6 +4,7 @@ variables:
   LOGIN: "$DB_LOGIN"
   PASSWORD: "$DB_PASSWORD"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
 default:
   image: python:3.11
   cache:
