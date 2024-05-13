@@ -7,10 +7,12 @@ WORKDIR /app
 
 # Копируем зависимости и файлы в рабочую директорию
 COPY requirements.txt /app/
+# Устанавливаем зависимости
+RUN pip install -r requirements.txt
+
 COPY . /app/
 
-# Устанавливаем зависимости
-RUN pip install --no-cache-dir -r requirements.txt
+
 
 # Определяем команду для запуска приложения
 CMD ["python", "main.py"]
