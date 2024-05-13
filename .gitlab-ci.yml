@@ -4,6 +4,7 @@ variables:
   LOGIN: "$DB_LOGIN"
   PASSWORD: "$DB_PASSWORD"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  DOCKER_DRIVER: overlay2
 
 default:
   image: python:3.11
@@ -11,10 +12,12 @@ default:
     key:
       files:
         - requirements.txt
+        - Dockerfile
       prefix: ${CI_JOB_NAME}
     paths:
       - .venv
       - .cache/pip
+      - /var/lib/docker/
   before_script:
     - python -V               # Print out python version for debugging
     - pip install virtualenv
