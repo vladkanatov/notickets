@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from cachetools import cached, TTLCache
 from decouple import config
+import asyncio
 
 HOST = config('HOST')
 DB = config('DB')
@@ -11,7 +12,7 @@ LOGIN = config('LOGIN')
 
 
 # Функция для получения списка названий площадок из базы данных
-@cached(cache=TTLCache(maxsize=128, ttl=600))
+# @cached(cache=TTLCache(maxsize=128, ttl=600))
 async def get_venue_names_from_database():
     async with aiomysql.create_pool(host=HOST, port=3306,
                                     user=LOGIN, password=PASSWORD,
@@ -20,6 +21,7 @@ async def get_venue_names_from_database():
             async with conn.cursor() as cur:
                 await cur.execute("SELECT venue_name FROM venues")
                 result = await cur.fetchall()
+                asyncio.sleep(1)
                 return [row[0] for row in result]
 
 
@@ -31,6 +33,7 @@ async def create_venue(input_venue_name: str):
             async with conn.cursor() as cur:
                 await cur.execute("INSERT INTO venues (venue_name) VALUES (%s)", (input_venue_name,))
                 await conn.commit()
+                asyncio.sleep(1)
                 return cur.lastrowid
 
 
@@ -71,6 +74,4 @@ async def main():
     print(f"ID площадки '{input_venue_name}': {venue_id}")
 
 if __name__ == '__main__':
-    import asyncio
-
     asyncio.run(main())
