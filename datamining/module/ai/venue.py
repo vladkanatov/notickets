@@ -58,6 +58,7 @@ async def find_or_create_venue(input_venue_name: str) -> int:
     else:
         # Если не найдено подходящего соответствия, создаем новую площадку
         venue_id = await create_venue(input_venue_name)
+        venue_id = int(venue_id)
 
     return venue_id
 
