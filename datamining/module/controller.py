@@ -94,7 +94,7 @@ class Parser(Controller):
         log_time_format = '%Y-%m-%d %H:%M:%S'
         normal_date = datetime.strftime(date, log_time_format)
         
-        venue_id = find_or_create_venue(venue)
+        venue_id = await find_or_create_venue(venue)
 
         new_event = {
             "name": event_name,
