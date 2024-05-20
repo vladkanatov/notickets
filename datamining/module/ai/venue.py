@@ -11,6 +11,7 @@ PASSWORD = config('PASSWORD')
 LOGIN = config('LOGIN')
 
 
+
 # Функция для получения списка названий площадок из базы данных
 # @cached(cache=TTLCache(maxsize=128, ttl=600))
 async def get_venue_names_from_database():
@@ -21,7 +22,7 @@ async def get_venue_names_from_database():
             async with conn.cursor() as cur:
                 await cur.execute("SELECT venue_name FROM venues")
                 result = await cur.fetchall()
-                asyncio.sleep(1)
+                await asyncio.sleep(1)
                 return [row[0] for row in result]
 
 
@@ -33,7 +34,7 @@ async def create_venue(input_venue_name: str):
             async with conn.cursor() as cur:
                 await cur.execute("INSERT INTO venues (venue_name) VALUES (%s)", (input_venue_name,))
                 await conn.commit()
-                asyncio.sleep(1)
+                await asyncio.sleep(1)
                 return cur.lastrowid
 
 
@@ -43,7 +44,10 @@ async def find_or_create_venue(input_venue_name: str) -> int:
 
     # Преобразуем исходные названия площадок в векторы TF-IDF
     vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(venue_names)
+    try:
+        tfidf_matrix = vectorizer.fit_transform(venue_names)
+    except ValueError:
+        return await create_venue(input_venue_name)
 
     # Преобразуем новое название площадки в вектор TF-IDF
     new_tfidf_vector = vectorizer.transform([input_venue_name])
