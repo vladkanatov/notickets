@@ -6,6 +6,7 @@ from .logger import logger
 from .manager import user_agent
 from datamining.module.logger import parser_name
 from datamining.module.manager.session import AsyncSession, AsyncProxySession
+from datamining.module.ai.venue import find_or_create_venue
 
 
 class Controller:
@@ -37,7 +38,7 @@ class Controller:
         payload = {
             'parser': parser_name
         }
-        r = await script.session.post('http://188.120.244.63:8000/clear_events/', json=payload)
+        r = await script.session.post('http://176.109.110.241:8000/clear_events/', json=payload)
         logger.debug(f'request for clear: {r.status_code}')
 
     async def load_script(self):
@@ -73,8 +74,8 @@ class Parser(Controller):
     def __init__(self):
         super().__init__()
 
-        # self.session: AsyncSession = AsyncSession()
-        self.session: AsyncProxySession = AsyncProxySession()
+        self.session: AsyncSession = AsyncSession()
+        # self.session: AsyncProxySession = AsyncProxySession()
         self.name = ''
 
     async def register_event(
@@ -92,15 +93,17 @@ class Parser(Controller):
 
         log_time_format = '%Y-%m-%d %H:%M:%S'
         normal_date = datetime.strftime(date, log_time_format)
+        
+        venue_id = await find_or_create_venue(venue)
 
         new_event = {
             "name": event_name,
             "link": link,
             "parser": parser,
             "date": normal_date,
-            "venue": venue
+            "venue_id": venue_id
         }
 
-        r = await self.session.post('http://188.120.244.63:8000/put_event/', json=new_event)
+        r = await self.session.post('http://176.109.110.241:8000/put_event/', json=new_event)
         if r.status_code != 200:
             logger.error(f"the request to the allocator ended with the code: {r.status_code}")
