@@ -4571,7 +4571,7 @@ spec:
               containerName: manager
               resource: limits.memory
         image: ghcr.io/fluxcd/source-controller:v1.3.0
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: always
         livenessProbe:
           httpGet:
             path: /healthz
