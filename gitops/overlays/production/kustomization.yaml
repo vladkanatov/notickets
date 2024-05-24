@@ -3,3 +3,5 @@ kind: Kustomization
 resources:
   - ../../base
   - ./loki-stack
+patchesStrategicMerge:
+  - patch.yaml

@@ -7,17 +7,14 @@ spec:
   releaseName: loki-stack
   chart:
     spec:
-      chart: loki-stack
-      version: 2.5.0 # Укажите нужную версию
+      chart: loki
       sourceRef:
         kind: HelmRepository
-        name: grafana
-        namespace: logging-system
-      interval: 1m
+        name: loki-repo
+        namespace: flux-system
+      version: 2.5.0
   values:
-    loki:
-      enabled: true
-    promtail:
-      enabled: true
-    grafana:
-      enabled: true
+    config:
+      table_manager:
+        retention_deletes_enabled: true
+        retention_period: 168h
