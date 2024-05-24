@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 1m
   url: https://github.com/grafana/helm-charts/tree/main/charts/loki-stack
-
+  indexFile: Chart.yaml
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
