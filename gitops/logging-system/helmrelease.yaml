@@ -6,7 +6,6 @@ metadata:
 spec:
   interval: 1m
   url: https://grafana.github.io/loki/charts
-  name: loki-stack-repo
 
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
