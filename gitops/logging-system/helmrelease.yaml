@@ -15,7 +15,6 @@ metadata:
   name: loki-stack-repo
   namespace: logging-system
 spec:
-  name: loki-stack-repo
   interval: 5m
   chart:
     spec:
