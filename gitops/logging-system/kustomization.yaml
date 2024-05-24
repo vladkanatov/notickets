@@ -3,5 +3,4 @@ kind: Kustomization
 namespace: logging-system
 
 resources:
-  - namespace.yaml
   - helmrelease.yaml
