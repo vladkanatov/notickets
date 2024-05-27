@@ -4,5 +4,6 @@ namespace: database
 
 resources:
   - namespace.yaml
+  - volume.yaml
   - mysql-deployment.yaml
   - mysql-service.yaml
