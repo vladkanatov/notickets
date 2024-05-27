@@ -20,7 +20,14 @@ spec:
           value: "132465-Cs"
         ports:
         - containerPort: 3306
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-storage
       tolerations:
       - key: "service"
         operator: "Exists"
         effect: "NoSchedule"
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
