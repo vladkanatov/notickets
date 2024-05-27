@@ -4,6 +4,5 @@ namespace: mysql-cluster
 
 resources:
   - serviceaccount.yaml
-  - credentials.yaml
   - helmrelease.yaml
 

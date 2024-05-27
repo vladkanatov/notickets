@@ -17,7 +17,11 @@ spec:
   values:
     tls:
       useSelfSigned: true
-    secretName: mycluster-cluster-secret
+    credentials:
+      root:
+        host: '%'
+        password: password
+        user: root
     instances: 3
     router:
       instances: 1
