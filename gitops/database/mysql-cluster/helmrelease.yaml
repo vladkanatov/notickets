@@ -19,7 +19,7 @@ spec:
       useSelfSigned: true
     credentials:
       root:
-        password: "password"
+        password: "132465-Cs"
     instances: 3
     router:
       instances: 1
