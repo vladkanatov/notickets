@@ -3,6 +3,6 @@ kind: Kustomization
 namespace: mysql-cluster
 
 resources:
-  - mysql-secret.yaml
-  - mysql-cluster.yaml
-  - mysql-service.yaml
+  - serviceaccount.yaml
+  - credentials.yaml
+  - helmrelease.yaml
