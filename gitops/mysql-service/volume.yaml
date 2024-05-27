@@ -4,13 +4,13 @@ metadata:
   name: mysql-pv
 spec:
   capacity:
-    storage: 20Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: manual
   hostPath:
-    path: "/mnt/data/mysql"  # Путь на хосте
+    path: "/mnt/data/mysql"  # Путь на хосте (только для тестирования)
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,5 +22,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 10Gi
   storageClassName: manual
