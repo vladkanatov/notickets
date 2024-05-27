@@ -23,4 +23,9 @@ spec:
         name: mysql-operator
         namespace: flux-system
       version: "2.1.3" # Убедитесь, что используете актуальную версию
+  values:
+    tolerations:
+      - key: "service"
+        operator: "Exists"
+        effect: "NoSchedule"
   # Добавьте другие значения конфигурации по необходимости
