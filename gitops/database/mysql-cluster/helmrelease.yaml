@@ -19,9 +19,7 @@ spec:
       useSelfSigned: true
     credentials:
       root:
-        host: '%'
-        password: password
-        user: root
+        password: "password"
     instances: 3
     router:
       instances: 1
