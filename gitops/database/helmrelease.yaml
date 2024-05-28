@@ -22,10 +22,6 @@ spec:
         kind: HelmRepository
         name: bitnami
   values:
-    tolerations:
-    - key: service
-      operator: Equal
-      effect: NoSchedule
     architecture: replication
     auth:
       rootPassword: 132465-Cs
@@ -34,6 +30,12 @@ spec:
       password: 132465-Cs
       replicationPassword: 132465-Cs
     primary:
+      nodeSelector:
+        environment: service
+      tolerations:
+      - key: service
+        operator: Equal
+        effect: NoSchedule
       persistence:
         enabled: true
         size: 8Gi
@@ -46,6 +48,12 @@ spec:
           memory: 1Gi
           cpu: 500m
     secondary:
+      nodeSelector:
+          environment: service
+      tolerations:
+      - key: service
+        operator: Equal
+        effect: NoSchedule
       replicaCount: 2
       persistence:
         enabled: true
