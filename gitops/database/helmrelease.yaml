@@ -24,7 +24,6 @@ spec:
   values:
     tolerations:
     - key: service
-      operator: Equal
       effect: NoSchedule
     architecture: replication
     auth:
