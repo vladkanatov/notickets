@@ -25,6 +25,7 @@ spec:
   values:
     tolerations:
       - key: "service"
-        operator: "Exists"
+        operator: "Equal"
+        value: "NoSchedule"
         effect: "NoSchedule"
   # Добавьте другие значения конфигурации по необходимости

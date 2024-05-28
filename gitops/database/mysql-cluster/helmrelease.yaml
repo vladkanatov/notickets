@@ -29,5 +29,6 @@ spec:
     serviceAccountName: mycluster-sa
     tolerations:
       - key: "service"
-        operator: "Exists"
+        operator: "Equal"
+        value: "NoSchedule"
         effect: "NoSchedule"
