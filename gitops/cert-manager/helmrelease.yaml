@@ -23,9 +23,9 @@ spec:
       version: "v1.14.5"  # Укажите нужную версию
   values:
     installCRDs: true # Укажите true, если хотите установить CRDs
-    nodeSelector:
-      environment: service
-    tolerations:
-    - key: service
-      operator: Equal
-      effect: NoSchedule
+    # nodeSelector:
+    #   environment: service
+    # tolerations:
+    # - key: service
+    #   operator: Equal
+    #   effect: NoSchedule

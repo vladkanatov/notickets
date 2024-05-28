@@ -21,3 +21,8 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: loki
+  values:
+    loki:
+      storage:
+        bucketNames:
+          chunks: your-chunks-bucket-name
