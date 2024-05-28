@@ -31,3 +31,17 @@ spec:
       persistence:
         enabled: true
         size: 1Gi
+    promtail:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: service
+        operator: Equal
+        effect: NoSchedule
+      - key: app
+        operator: Equal
+        effect: NoSchedule
