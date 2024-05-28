@@ -32,6 +32,7 @@ spec:
       database: notickets
       username: lon8
       password: 132465-Cs
+      replicationPassword: 132465-Cs
     primary:
       persistence:
         enabled: true
