@@ -21,9 +21,3 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: loki
-  values:
-    singleBinary:
-      persistence:
-        storageClass: yc-network-hdd
-        enabled: true
-        size: 10Gi
