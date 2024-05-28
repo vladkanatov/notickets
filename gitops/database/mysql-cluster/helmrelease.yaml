@@ -31,4 +31,4 @@ spec:
       - key: "service"
         operator: "Equal"
         value: "NoSchedule"
-        effect: "NoSchedule"
+        # effect: "NoSchedule"
