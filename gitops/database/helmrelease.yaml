@@ -58,4 +58,3 @@ spec:
         limits:
           memory: 1Gi
           cpu: 500m
-#
