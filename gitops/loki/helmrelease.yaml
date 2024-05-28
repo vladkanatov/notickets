@@ -11,7 +11,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: loki
-  namespace: logging-system
+  namespace: loki
 spec:
   interval: 5m
   chart:
@@ -22,6 +22,13 @@ spec:
         kind: HelmRepository
         name: loki
   values:
-    persistence:
-      enabled: true
-      size: 10Gi
+    write:
+      persistence:
+        storageClass: yc-network-hdd
+        enabled: true
+        size: 10Gi
+    read:
+      persistence:
+        storageClass: yc-network-hdd
+        enabled: true
+        size: 10Gi
