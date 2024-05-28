@@ -26,3 +26,8 @@ spec:
       persistence:
         enabled: true
         size: 10Gi
+    grafana:
+      enable: true
+      persistence:
+        enabled: true
+        size: 1Gi
