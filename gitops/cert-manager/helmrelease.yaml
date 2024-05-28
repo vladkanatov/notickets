@@ -27,5 +27,4 @@ spec:
       environment: service
     tolerations:
       key: service
-      operator: Exists
-      value: NoSchedule
+      effect: NoSchedule
