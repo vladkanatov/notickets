@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: loki
   values:
-    write:
+    singleBinary:
       persistence:
         storageClass: yc-network-hdd
         enabled: true
