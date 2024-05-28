@@ -26,6 +26,6 @@ spec:
     nodeSelector:
       environment: service
     tolerations:
-      key: service
+    - key: service
       operator: Equal
       effect: NoSchedule
