@@ -27,8 +27,3 @@ spec:
         storageClass: yc-network-hdd
         enabled: true
         size: 10Gi
-    read:
-      persistence:
-        storageClass: yc-network-hdd
-        enabled: true
-        size: 10Gi
