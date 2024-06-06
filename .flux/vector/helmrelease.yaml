@@ -22,7 +22,4 @@ spec:
         kind: HelmRepository
         name: vector
   values:
-    tolerations:
-    - key: service
-      operator: Equal
-      effect: NoSchedule
+    - values.yaml
