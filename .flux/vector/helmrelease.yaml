@@ -22,6 +22,14 @@ spec:
         kind: HelmRepository
         name: vector
   values:
+    customConfig:
+      config: |
+        [sources.kubernetes_logs]
+        type = "kubernetes"
+        [sinks.loki]
+        type = "loki"
+        endpoint = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push" # Адрес Loki
+        batch_size = 1000 # Размер пакета для отправки в Loki
     tolerations:
     - key: service
       operator: Equal
