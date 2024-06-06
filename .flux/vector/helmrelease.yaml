@@ -21,23 +21,23 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: vector
-  values:
-    customConfig:
-      data_dir: "/vector-data-dir"
+  # values:
+  #   customConfig:
+  #     data_dir: "/vector-data-dir"
 
-      sources:
-        kubernetes_logs:
-          type: kubernetes_logs
-          glob_minimum_cooldown_ms: 1000
-          ingestion_timestamp_field: ingestion_timestamp
-      sinks:
-        loki:
-          type: loki
-          inputs: ["sample"]
-          endpoint: http://loki.loki.svc.cluster.local:3100/loki/api/v1/push
-      tolerations:
-        - key: service
-          operator: Equal
-          effect: NoSchedule
-    service:
-      ports: 8686
+  #     sources:
+  #       kubernetes_logs:
+  #         type: kubernetes_logs
+  #         glob_minimum_cooldown_ms: 1000
+  #         ingestion_timestamp_field: ingestion_timestamp
+  #     sinks:
+  #       loki:
+  #         type: loki
+  #         inputs: ["sample"]
+  #         endpoint: http://loki.loki.svc.cluster.local:3100/loki/api/v1/push
+  #     tolerations:
+  #       - key: service
+  #         operator: Equal
+  #         effect: NoSchedule
+  #   service:
+  #     ports: 8686
