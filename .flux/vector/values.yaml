@@ -1,35 +1,38 @@
-customConfig:
-  data_dir: "/vector-data-dir"
-  healthchecks:
-    enabled: true
-    require_healthy: true
-  api:
-    enabled: true
-    address: "0.0.0.0:{{ with index .Values.service.ports 0 }}{{ .port }}{{ end }}"
-    playground: false
-  sources:
-    internal_logs:
-      type: internal_logs
-    internal_metrics:
-      type: internal_metrics
-    kubernetes_logs:
-      type: kubernetes_logs
-      glob_minimum_cooldown_ms: 1000
-      ingestion_timestamp_field: ingestion_timestamp
-    statsd_metrics:
-      type: statsd
-      address: "0.0.0.0:{{ with index .Values.service.ports 1 }}{{ .port }}{{ end }}"
-      mode: tcp
-  transforms:
-    sample:
-      type: sample
-      inputs: ["*_logs"]
-      rate: 20
-  sinks:
-    loki:
-      type: loki
-      inputs: ["sample"]
-      endpoint: http://loki.loki.svc.cluster.local:3100/loki/api/v1/push
+# Values for HelmRelease Vector.dev
+data_dir: "/vector-data-dir"
+
+healthchecks:
+  enabled: true
+  require_healthy: true
+api:
+
+  enabled: true
+  address: "0.0.0.0:{{ with index .Values.service.ports 0 }}{{ .port }}{{ end }}"
+  playground: false
+
+sources:
+  internal_logs:
+    type: internal_logs
+  internal_metrics:
+    type: internal_metrics
+  kubernetes_logs:
+    type: kubernetes_logs
+    glob_minimum_cooldown_ms: 1000
+    ingestion_timestamp_field: ingestion_timestamp
+  statsd_metrics:
+    type: statsd
+    address: "0.0.0.0:{{ with index .Values.service.ports 1 }}{{ .port }}{{ end }}"
+    mode: tcp
+transforms:
+  sample:
+    type: sample
+    inputs: ["*_logs"]
+    rate: 20
+sinks:
+  loki:
+    type: loki
+    inputs: ["sample"]
+    endpoint: http://loki.loki.svc.cluster.local:3100/loki/api/v1/push
 
 service:
   enabled: true
@@ -44,6 +47,6 @@ service:
     targetPort: 8000
 
 tolerations:
-    - key: service
-      operator: Equal
-      effect: NoSchedule
+  - key: service
+    operator: Equal
+    effect: NoSchedule
