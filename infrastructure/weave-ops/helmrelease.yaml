@@ -40,4 +40,3 @@ spec:
       create: true
       passwordHash: $2a$10$mJwgUympJjItMq5dqF/w0.cnOCa29bISYZwoU8JCBW2R6gv9TdunC
       username: admin
-
