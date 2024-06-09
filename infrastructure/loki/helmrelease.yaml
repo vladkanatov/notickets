@@ -27,9 +27,7 @@ spec:
         enabled: true
         accessModes:
           - ReadWriteOnce
-        size: 50Gi
-    promtail:
-      enabled: false
+        size: 30Gi
     grafana:
       enabled: false
     prometheus:
