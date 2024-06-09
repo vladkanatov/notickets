@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-config
+data:
+  HOST: "your_host_value"
+  DB: "your_db_value"
+  USER: "your_user_value"
+  PASSWORD: "your_password_value"
+  PORT: "your_port_value"
