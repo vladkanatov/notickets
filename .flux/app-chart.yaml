@@ -22,3 +22,7 @@ metadata:
 spec:
   dependsOn:
     - name: database
+  sourceRef:
+    kind: GitRepository
+    name: initdb
+  prune: true
