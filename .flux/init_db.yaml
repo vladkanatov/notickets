@@ -11,6 +11,6 @@ spec:
       version: '0.1.0'
       sourceRef:
         kind: GitRepository
-        name: flux-system
+        name: initdb
+        namespace: flux-system
       interval: 10m
-      path: ./charts/initdb/templates
