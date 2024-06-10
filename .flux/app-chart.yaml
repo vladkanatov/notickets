@@ -25,5 +25,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: initdb
+  path: ./charts/initdb
   interval: 10m
   prune: true
