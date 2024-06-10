@@ -25,4 +25,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: initdb
+  interval: 10m
   prune: true
