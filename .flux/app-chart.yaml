@@ -22,5 +22,3 @@ metadata:
 spec:
   dependsOn:
     - name: database
-      kind: Kustomization
-      path: ./database.yaml
