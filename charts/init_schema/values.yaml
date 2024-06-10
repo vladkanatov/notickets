@@ -1,4 +1,4 @@
-init_schema:
+initdb:
   image: docker.io/lon8/notickets_initdb
   env:
     MYSQL_HOST: "mariadb-cluster-primary.mariadb.svc.cluster.local"

@@ -1,19 +1,19 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: init_schema
+  name: initdb
 spec:
   template:
     spec:
       containers:
-      - name: init_schema
-        image: {{ .Values.init_schema.image }}
+      - name: initdb
+        image: {{ .Values.initdb.image }}
         command:
           - "/bin/sh"
           - "-c"
           - "mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < /docker-entrypoint-initdb.d/init.sql"
         env:
-        {{- range $key, $value := .Values.init_schema.env }}
+        {{- range $key, $value := .Values.initdb.env }}
         - name: {{ $key }}
           value: {{ quote $value }}
         {{- end }}
