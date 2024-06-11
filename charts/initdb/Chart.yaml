@@ -1,4 +1,0 @@
-apiVersion: v2
-name: initdb
-description: A Helm chart for Init DB
-version: 0.1.0

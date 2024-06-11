@@ -1,8 +1,0 @@
-initdb:
-  image: docker.io/lon8/notickets_initdb
-  env:
-    MYSQL_HOST: "mariadb-cluster-primary.mariadb.svc.cluster.local"
-    MYSQL_PORT: "3306"
-    MYSQL_DATABASE: "notickets"
-    MYSQL_USER: "lon8"
-    MYSQL_PASSWORD: "132465-Cs"
