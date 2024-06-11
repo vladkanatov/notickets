@@ -12,7 +12,7 @@ spec:
         command: ["sh", "-c", "until nc -z -v -w30 mariadb-cluster-primary.mariadb.svc.cluster.local 3306; do echo 'Waiting for MariaDB cluster to start...'; sleep 5; done"]
       containers:
       - name: mysql-client
-        image: lon8/notickets_initdb:1.0
+        image: lon8/notickets_initdb:1.1
         command:
           - "/bin/sh"
           - "-c"
