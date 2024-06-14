@@ -1,43 +1,38 @@
-import aiomysql
+import sys
+sys.path.append("/home/lon8/python/notickets")
+
+from datamining.module.manager.session import AsyncSession
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
-from cachetools import cached, TTLCache
 from decouple import config
 import asyncio
 
-HOST = config('HOST')
-DB = config('DB')
-PASSWORD = config('PASSWORD')
-LOGIN = config('LOGIN')
 
+SERVER_HOST=config("SERVER_HOST")
+SERVER_PORT= config("SERVER_PORT")
 
 
 # Функция для получения списка названий площадок из базы данных
 # @cached(cache=TTLCache(maxsize=128, ttl=600))
 async def get_venue_names_from_database():
-    async with aiomysql.create_pool(host=HOST, port=3306,
-                                    user=LOGIN, password=PASSWORD,
-                                    db=DB) as pool:
-        async with pool.acquire() as conn:
-            async with conn.cursor() as cur:
-                await cur.execute("SELECT venue_name FROM venues")
-                result = await cur.fetchall()
-                await asyncio.sleep(1)
-                return [row[0] for row in result]
+    async with AsyncSession() as session:
+        r = await session.get(f'http://{SERVER_HOST}:{SERVER_PORT}/get_venues/')
+        data = r.json()
+        
+        result = list(data.values())
+    
+        return result
 
 
 async def create_venue(input_venue_name: str):
-    async with aiomysql.create_pool(host=HOST, port=3306,
-                                    user=LOGIN, password=PASSWORD,
-                                    db=DB) as pool:
-        async with pool.acquire() as conn:
-            async with conn.cursor() as cur:
-                await cur.execute("INSERT INTO venues (venue_name) VALUES (%s)", (input_venue_name,))
-                await conn.commit()
-                await asyncio.sleep(1)
-                return cur.lastrowid
-
-
+    async with AsyncSession() as session:
+        r = await session.post(f'http://{SERVER_HOST}:{SERVER_PORT}/create_venue/', json= {'venue': input_venue_name})
+        
+        data = r.json()
+        lastrowid = data['venue_id']
+        
+        return lastrowid
+        
 # Функция для поиска или создания площадки
 async def find_or_create_venue(input_venue_name: str) -> int:
     venue_names = await get_venue_names_from_database()
@@ -59,7 +54,7 @@ async def find_or_create_venue(input_venue_name: str) -> int:
     best_match_index = cosine_similarities.argmax()
 
     # Если ближайшее соответствие имеет достаточно высокий балл, возвращаем id
-    if cosine_similarities[best_match_index] >= 0.6:
+    if cosine_similarities[best_match_index] >= 0.8:
         # Индексация начинается с 0, поэтому добавляем 1.
         venue_id = int(best_match_index + 1)
     else:
