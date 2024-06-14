@@ -2,7 +2,6 @@ from datamining.module.controller import Parser
 from datamining.module.logger import logger
 from bs4 import BeautifulSoup
 
-import json
 from datetime import datetime
 
 class Template(Parser):

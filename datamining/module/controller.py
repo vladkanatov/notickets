@@ -1,12 +1,16 @@
 from datetime import datetime
 import importlib
 import inspect
+from decouple import config
 
 from .logger import logger
 from .manager import user_agent
 from datamining.module.logger import parser_name
 from datamining.module.manager.session import AsyncSession, AsyncProxySession
 from datamining.module.ai.venue import find_or_create_venue
+
+SERVER_HOST = config('SERVER_HOST')
+SERVER_PORT= config('SERVER_PORT')
 
 
 class Controller:
@@ -38,7 +42,7 @@ class Controller:
         payload = {
             'parser': parser_name
         }
-        r = await script.session.post('http://176.109.110.241:8000/clear_events/', json=payload)
+        r = await script.session.post(f'http://{SERVER_HOST}:{SERVER_PORT}/clear_events/', json=payload)
         logger.debug(f'request for clear: {r.status_code}')
 
     async def load_script(self):
@@ -104,6 +108,8 @@ class Parser(Controller):
             "venue_id": venue_id
         }
 
-        r = await self.session.post('http://176.109.110.241:8000/put_event/', json=new_event)
+        logger.debug(new_event)
+
+        r = await self.session.post(f'http://{SERVER_HOST}:{SERVER_PORT}/put_event/', json=new_event)
         if r.status_code != 200:
             logger.error(f"the request to the allocator ended with the code: {r.status_code}")
