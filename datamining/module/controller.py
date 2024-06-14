@@ -107,12 +107,6 @@ class Parser(Controller):
             "venue_id": venue_id
         }
 
-<<<<<<< HEAD
         r = await self.session.post('http://{SERVER_HOST}:{SERVER_PORT}/put_event/', json=new_event)
-=======
-        logger.debug(new_event)
-
-        r = await self.session.post(f'http://{SERVER_HOST}:{SERVER_PORT}/put_event/', json=new_event)
->>>>>>> 932d71f8a9e596ea1a3d0742fdbdc760bccada8e
         if r.status_code != 200:
             logger.error(f"the request to the allocator ended with the code: {r.status_code}")
