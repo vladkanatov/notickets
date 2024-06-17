@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import Optional
+from bs4 import BeautifulSoup
+
 from datamining.module.controller import Parser
 from datamining.module.logger import logger
-
-from datetime import datetime
 
 
 class Bileter(Parser):
@@ -98,7 +98,13 @@ class Bileter(Parser):
     async def put_db(self, events: list[tuple]) -> None:
         for event in events:
             logger.debug(event)
-            await self.register_event(event_name=event[0], link=event[1], date=event[2], venue=event[3])
+            await self.register_event(
+                event_name=event[0],
+                link=event[1],
+                date=event[2],
+                venue=event[3],
+                image_link=event[4]
+            )
 
     async def main(self):
         events_list = []
@@ -125,6 +131,8 @@ class Bileter(Parser):
                 events = soup.find_all('div', class_='afishe-item')
 
                 for event in events:
+                    image_link = event.find('a', class_='preview').find('img')['data-src']
+                    
                     title = event.find('div', class_='name').text.replace('\n', '')
                     venue = event.find('div', class_='place').text.replace('\n', '')[:-1]
 
@@ -133,11 +141,11 @@ class Bileter(Parser):
                         link = self.get_link(event)
                         date = self.get_date(event)
 
-                        events_list.append((title, link, date, venue))
+                        events_list.append((title, link, date, venue, image_link))
                     else:
                         for ticket in tickets:
                             link = self.get_link_from_list(ticket)
                             date = self.get_date_from_list(ticket)
 
-                            events_list.append((title, link, date, venue))
+                            events_list.append((title, link, date, venue, image_link))
         await self.put_db(events_list)

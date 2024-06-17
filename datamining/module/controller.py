@@ -12,7 +12,6 @@ from datamining.module.ai.venue import find_or_create_venue
 SERVER_HOST = config('SERVER_HOST')
 SERVER_PORT= config('SERVER_PORT')
 
-
 class Controller:
 
     def __init__(self):
@@ -87,7 +86,8 @@ class Parser(Controller):
             event_name: str,
             link: str,
             date: datetime,
-            venue: str = None):
+            venue: str = None,
+            image_link: str = None):
 
         event_name = event_name.replace('\n', ' ')
         if venue is not None:
@@ -105,7 +105,8 @@ class Parser(Controller):
             "link": link,
             "parser": parser,
             "date": normal_date,
-            "venue_id": venue_id
+            "venue_id": venue_id,
+            "image_link": image_link
         }
 
         logger.debug(new_event)
