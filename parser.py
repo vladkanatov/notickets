@@ -68,6 +68,7 @@ class Template(Parser):
             
             for container in containers:
                 title = container.find('img', class_='playbill-el-img-mobile')['alt']
+                image_link = container.find('img', class_='playbill-el-img-mobile')['data-src']
                 link = 'https://bkz.ru/afisha' + container['href']
                 time = container.find('div', class_='playbill-el-text-date')
                 
