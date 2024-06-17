@@ -9,9 +9,8 @@ from datamining.module.logger import parser_name
 from datamining.module.manager.session import AsyncSession, AsyncProxySession
 from datamining.module.ai.venue import find_or_create_venue
 
-SERVER_HOST = config('SERVER_HOST')
-SERVER_PORT= config('SERVER_PORT')
-
+SERVER_HOST=config("SERVER_HOST")
+SERVER_PORT=config("SERVER_PORT")
 
 class Controller:
 
@@ -87,7 +86,8 @@ class Parser(Controller):
             event_name: str,
             link: str,
             date: datetime,
-            venue: str = None):
+            venue: str = None,
+            image_link: str = None):
 
         event_name = event_name.replace('\n', ' ')
         if venue is not None:
@@ -105,10 +105,9 @@ class Parser(Controller):
             "link": link,
             "parser": parser,
             "date": normal_date,
-            "venue_id": venue_id
+            "venue_id": venue_id,
+            "image_link": image_link
         }
-
-        logger.debug(new_event)
 
         r = await self.session.post(f'http://{SERVER_HOST}:{SERVER_PORT}/put_event/', json=new_event)
         if r.status_code != 200:
