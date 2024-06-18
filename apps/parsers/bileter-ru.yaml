@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: parser_bileter_ru
+  name: parser-bileter-ru
 spec:
   schedule: "*/5 * * * *"
   jobTemplate:
@@ -15,7 +15,7 @@ spec:
             operator: Equal
             effect: NoSchedule
           containers:
-          - name: bileter_ru
+          - name: bileter-ru
             image: lon8/bileter_ru:latest
             env:
             - name: SERVER_HOST
