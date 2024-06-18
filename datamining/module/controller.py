@@ -106,7 +106,7 @@ class Parser(Controller):
             "parser": parser,
             "date": normal_date,
             "venue_id": venue_id,
-            "image_link": image_link
+            "image_links": image_link
         }
 
         r = await self.session.post(f'http://{SERVER_HOST}:{SERVER_PORT}/put_event/', json=new_event)

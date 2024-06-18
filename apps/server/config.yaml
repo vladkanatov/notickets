@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fastapi-config
+data:
+  HOST: "mariadb-cluster-primary.mariadb.svc.cluster.local"
+  PORT: "3306"
+  LOGIN: "lon8"
+  PASSWORD: "132465-Cs"
+  DB: "notickets"
+  DATABASE_LINK: "mysql+mysqlconnector://lon8:132465-Cs@mariadb-cluster-primary.mariadb.svc.cluster.local:3306/notickets"

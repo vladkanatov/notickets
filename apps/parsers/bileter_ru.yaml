@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: parser_bileter_ru
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          nodeSelector:
+            environment: app
+          tolerations:
+          - key: app
+            operator: Equal
+            effect: NoSchedule
+          containers:
+          - name: bileter_ru
+            image: lon8/bileter_ru:latest
+            env:
+            - name: SERVER_HOST
+              value: "http://server.notickets.svc.cluster.local"
+            env:
+            - name: SERVER_PORT
+              value: "8000"
+          restartPolicy: OnFailure
