@@ -17,11 +17,6 @@ spec:
           containers:
           - name: bileter-ru
             image: lon8/bileter_ru:latest
-            env:
-            - name: SERVER_HOST
-              value: "http://fastapi-service.notickets.svc.cluster.local"
-            - name: SERVER_PORT
-              value: "8000"
             envFrom:
             - configMapRef:
                 name: parsers-config
