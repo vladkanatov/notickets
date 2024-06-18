@@ -5,4 +5,4 @@ metadata:
   namespace: notickets
 data:
   VITE_REACT_APP_SERVER_URL: "http://fastapi-service.notickets.svc.cluster.local"
-  REACT_APP_PORT: 3000
+  REACT_APP_PORT: "3000"
