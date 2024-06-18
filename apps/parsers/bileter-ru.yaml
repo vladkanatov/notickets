@@ -22,4 +22,7 @@ spec:
               value: "http://fastapi-service.notickets.svc.cluster.local"
             - name: SERVER_PORT
               value: "8000"
+            envFrom:
+            - configMapRef:
+                name: parsers-config
           restartPolicy: OnFailure
