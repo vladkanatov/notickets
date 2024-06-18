@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: fastapi-service
+  namespace: notickets
 spec:
   selector:
     app: fastapi-app
