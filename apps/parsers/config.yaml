@@ -4,5 +4,5 @@ metadata:
   name: parsers-config
   namespace: notickets
 data:
-  SERVER_HOST: "http://fastapi-service.notickets.svc.cluster.local"
+  SERVER_HOST: "fastapi-service.notickets.svc.cluster.local"
   SERVER_PORT: "8000"
