@@ -5,13 +5,8 @@ metadata:
   name: notickets-ingress
   namespace: notickets
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/ingress.class: nginx
 spec:
-  tls:
-  - hosts:
-    - notickets.ru
-    secretName: notickets-ru-tls
   rules:
   - host: notickets.ru
     http:
