@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: notickets
+data:
+  VITE_REACT_APP_SERVER_URL: "http://"fastapi-service.notickets.svc.cluster.local"
+  REACT_APP_PORT: 3000
