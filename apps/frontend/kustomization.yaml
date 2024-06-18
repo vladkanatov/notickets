@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - config.yaml
   - deployment.yaml
+  - service.yaml
 namespace: notickets
