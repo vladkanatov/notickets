@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: parsers-config
-  namespace: notickets
-data:
-  SERVER_HOST: "fastapi-service.notickets.svc.cluster.local"
-  SERVER_PORT: "80"

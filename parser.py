@@ -1,6 +1,3 @@
-from datamining.module.controller import Parser
-from datamining.module.logger import logger
-
 from datetime import datetime
 
 from datamining.controller import Parser
