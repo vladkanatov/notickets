@@ -9,3 +9,4 @@ logs/
 .vscode
 merge_guide.png
 .env
+.vim/

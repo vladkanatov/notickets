@@ -6,7 +6,6 @@ LOGIN = config("LOGIN")
 PASSWORD = config("PASSWORD")
 HOST = config("HOST")
 
-
 def get_proxies() -> list[dict]:
     # connect
     conn = mysql.connector.connect(

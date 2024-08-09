@@ -4,9 +4,9 @@ import inspect
 
 from .logger import logger
 from .manager import user_agent
-from datamining.module.logger import parser_name
-from datamining.module.manager.session import AsyncSession, AsyncProxySession
-from datamining.module.ai.venue import find_or_create_venue
+from datamining.logger import parser_name
+from datamining.manager.session import AsyncSession, AsyncProxySession
+from datamining.ai.venue import find_or_create_venue
 
 
 class Controller:

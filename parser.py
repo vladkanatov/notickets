@@ -1,9 +1,5 @@
-from datamining.module.controller import Parser
-from datamining.module.logger import logger
-
-import json
-from datetime import datetime
-
+from datamining.controller import Parser
+from datamining.logger import logger
 
 class Template(Parser):
 

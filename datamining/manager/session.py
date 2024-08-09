@@ -3,7 +3,7 @@ import aiohttp
 from aiohttp import ClientResponse, BasicAuth
 from aiohttp.typedefs import StrOrURL, JSONDecoder
 from typing import Any, Optional
-from datamining.module.proxy.manager import ProxyManager
+from datamining.proxy.manager import ProxyManager
 
 class AwaitedResponse:
 

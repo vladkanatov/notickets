@@ -1,6 +1,5 @@
 import asyncio
-from datamining.module.controller import Controller
-
+from datamining.controller import Controller
 
 if __name__ == "__main__":
     controller = Controller()
