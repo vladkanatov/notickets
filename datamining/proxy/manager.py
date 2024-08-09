@@ -1,4 +1,4 @@
-from datamining.proxy.get import get_proxies
+# from datamining.module.proxy.get import get_proxies
 from datetime import datetime, timedelta
 from datamining.logger import logger
 import random

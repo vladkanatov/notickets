@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: notickets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-app
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+    spec:
+      nodeSelector:
+        environment: app
+      tolerations:
+      - key: app
+        operator: Equal
+        effect: NoSchedule
+      containers:
+      - name: frontend-container
+        image: lon8/notickets_front:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: frontend-config

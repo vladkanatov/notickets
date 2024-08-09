@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: parser-bileter-ru
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          nodeSelector:
+            environment: app
+          tolerations:
+          - key: app
+            operator: Equal
+            effect: NoSchedule
+          containers:
+          - name: bileter-ru
+            image: lon8/bileter_ru:latest
+            envFrom:
+            - configMapRef:
+                name: parsers-config
+          restartPolicy: OnFailure
